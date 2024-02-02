@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageVersion>0.2.0-beta</PackageVersion>
-    <PackageId>Community.Twincat.Mdp.Reactive</PackageId>
+    <PackageId>Community.TwinCAT.Mdp.Reactive</PackageId>
     <Title>Community.Twincat.Mdp.Reactive</Title>
     <Authors>Philipp Leidig</Authors>
     <Description>
