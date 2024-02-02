@@ -23,6 +23,9 @@ See [Beckhoff.TwinCAT.Ads](https://www.nuget.org/packages/Beckhoff.TwinCAT.Ads/)
 
 ## Usage
 
+
+### Basic 
+
 ```cs
 using( MdpClient client = new MdpClient() ) 
 {
@@ -34,6 +37,25 @@ using( MdpClient client = new MdpClient() )
     var cpuTempAsync = await client.ReadParameterAsync(ModuleType.CPU, 1, 3, typeof(short), CancellationToken.None);
     var osVersion = client.ReadParameter<uint>(ModuleType.OS, 1, 3);
 
+}
+```
+
+### Reactive 
+
+```cs
+using( MdpClient client = new MdpClient() ) 
+{
+    client.Connect("192.168.1.244.1.1");
+
+    client.WhenConnectionStateChanges()
+          .Subscribe(x => Console.WriteLine(x));
+
+    client
+        .PollParameter(ModuleType.CPU, 1, 1, typeof(int), TimeSpan.FromSeconds(1))
+        .Subscribe(i => Console.WriteLine(i));
+
+    client.WhenValueChanged(ModuleType.OS, 2, 1, typeof(ulong))
+          .Subscribe(i => Console.WriteLine(i));
 }
 ```
 

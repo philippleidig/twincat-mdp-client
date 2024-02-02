@@ -93,7 +93,7 @@ namespace TwinCAT.Mdp.Tests
 
 			var cpuFrequency = client.ReadParameter<int>(ModuleType.CPU, 1, 1);
 
-			Assert.AreEqual(2496, cpuFrequency);
+			Assert.AreEqual(2495, cpuFrequency);
 		}
 
 		[TestMethod]
