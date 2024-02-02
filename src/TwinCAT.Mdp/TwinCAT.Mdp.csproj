@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>0.2.0-beta</PackageVersion>
+    <PackageId>Community.TwinCAT.Mdp</PackageId>
+    <Title>Community.TwinCAT.Mdp</Title>
+    <Authors>Philipp Leidig</Authors>
+    <Description>
+      Contains a MDP client implementation for the Beckhoff Device Manager communication protocol based on the TwinCAT.Ads.AdsClient. 
+      The Root object is the TwinCAT.MDP.MdpClient to communicate with the Beckhoff Device Manager via ADS. 
+      Use TwinCAT.Mdp.Reactive for reactive extensions.
+    </Description>
+    <Copyright>Philipp Leidig</Copyright>
+    <PackageProjectUrl>https://github.com/philippleidig/twincat-mdp-client</PackageProjectUrl>
+    <PackageTags>Beckhoff, TwinCAT, ADS, MDP</PackageTags>
+    <PackageIcon>twincat.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/philippleidig/twincat-mdp-client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Beckhoff.TwinCAT.Ads" Version="6.1.154" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\assets\images\twincat.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>
