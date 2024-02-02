@@ -1,7 +1,12 @@
 # TwinCAT MDP Client 
 
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/philippleidig/twincat-mdp-client/blob/main/LICENSE.md) ![NuGet Version](https://img.shields.io/nuget/v/Community.TwinCAT.Mdp)
+
+
 Contains a MDP client implementation for the [Beckhoff Device Manager](https://infosys.beckhoff.com/english.php?content=../content/1033/devicemanager/262978315.html&id=2272923899604552966) communication protocol based on the TwinCAT.Ads.AdsClient. 
 The Root object is the TwinCAT.MDP.MdpClient to communicate with the Beckhoff Device Manager via ADS. Use TwinCAT.Mdp.Reactive for reactive extensions.
+
+Since the official [Beckhoff MDP client for C#](https://infosys.beckhoff.com/english.php?content=../content/1033/devicemanager/262967819.html&id=6522845330547228144) only allows local access, remote access is also possible with TwinCAT.Mdp.MdpClient
 
 ## Requirements
 
@@ -22,6 +27,8 @@ See [Beckhoff.TwinCAT.Ads](https://www.nuget.org/packages/Beckhoff.TwinCAT.Ads/)
 
 
 ## Usage
+
+see [Beckhoff Infosys](https://infosys.beckhoff.com/english.php?content=../content/1033/devicemanager/262978315.html&id=2272923899604552966) for detailed information
 
 
 ### Basic 
@@ -58,6 +65,13 @@ using( MdpClient client = new MdpClient() )
           .Subscribe(i => Console.WriteLine(i));
 }
 ```
+
+### How to determine table und sub index
+
+see [MDP information model](https://infosys.beckhoff.com/english.php?content=../content/1033/devicemanager/262982923.html&id=4417408165722882460)
+
+![mdp-information-model](./assets/images/mdp-information-model.png)
+
 
 ## License
 
