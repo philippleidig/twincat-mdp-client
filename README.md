@@ -1,6 +1,6 @@
 # TwinCAT MDP Client 
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/philippleidig/twincat-mdp-client/blob/main/LICENSE.md) ![NuGet Version](https://img.shields.io/nuget/v/Community.TwinCAT.Mdp)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/philippleidig/twincat-mdp-client/blob/main/LICENSE.md) [![NuGet Version](https://img.shields.io/nuget/v/Community.TwinCAT.Mdp)](https://www.nuget.org/packages/Community.TwinCAT.Mdp/)
 
 
 Contains a MDP client implementation for the [Beckhoff Device Manager](https://infosys.beckhoff.com/english.php?content=../content/1033/devicemanager/262978315.html&id=2272923899604552966) communication protocol based on the TwinCAT.Ads.AdsClient. 
