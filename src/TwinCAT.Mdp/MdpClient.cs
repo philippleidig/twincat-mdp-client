@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using TwinCAT.Ads;
 using TwinCAT.Mdp.Abstractions;
 using TwinCAT.Mdp.DataTypes;
-using TwinCAT.Mdp.Extensions;
 using TwinCAT.TypeSystem;
 
 namespace TwinCAT.Mdp
