@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using TwinCAT.Ads;
 using TwinCAT.Mdp.Abstractions;
 using TwinCAT.Mdp.DataTypes;
+using TwinCAT.Mdp.Extensions;
+using TwinCAT.TypeSystem;
 
 namespace TwinCAT.Mdp
 {
@@ -20,6 +22,8 @@ namespace TwinCAT.Mdp
 			IConnectionStateProvider,
 			IDisposable
 	{
+		private const uint AdsCoEIndexGroup = 0xF302;
+
 		private readonly AdsClient _adsClient;
 		private readonly ILogger _logger;
 		private readonly Dictionary<uint, ModuleType> _modules = new Dictionary<uint, ModuleType>();
@@ -262,7 +266,19 @@ namespace TwinCAT.Mdp
 				throw new ArgumentException(type.ToString());
 			}
 
-			return _adsClient.ReadAny(0xF302, ToIndexOffset(address), type);
+			if (type == typeof(string))
+			{
+				return _adsClient.ReadAnyString(
+					AdsCoEIndexGroup,
+					ToIndexOffset(address),
+					255,
+					System.Text.Encoding.ASCII
+				);
+			}
+			else
+			{
+				return _adsClient.ReadAny(AdsCoEIndexGroup, ToIndexOffset(address), type);
+			}
 		}
 
 		/// <summary>
@@ -295,24 +311,29 @@ namespace TwinCAT.Mdp
 
 			if (type == typeof(string))
 			{
-				var result = await _adsClient.ReadAnyAsync(
-					0xF302,
+				var result = await _adsClient.ReadAnyStringAsync(
+					AdsCoEIndexGroup, 
 					ToIndexOffset(address),
-					type,
-					new int[] { 255 },
-					cancel
+					255, 
+					System.Text.Encoding.ASCII, cancel
 				);
+
+				result.ThrowOnError();
+
 				return result.Value;
 			}
 			else
 			{
 				var result = await _adsClient.ReadAnyAsync(
-					0xF302,
+					AdsCoEIndexGroup,
 					ToIndexOffset(address),
 					type,
 					null,
 					cancel
 				);
+
+				result.ThrowOnError();
+
 				return result.Value;
 			}
 		}
@@ -342,11 +363,12 @@ namespace TwinCAT.Mdp
 
 			if (typeof(T) == typeof(string))
 			{
-				return _adsClient.ReadAny<T>(0xF302, ToIndexOffset(address), new int[] { 255 });
+				var value = _adsClient.ReadAnyString(AdsCoEIndexGroup, ToIndexOffset(address), 255, System.Text.Encoding.ASCII);
+				return (T)Convert.ChangeType(value, typeof(T));
 			}
 			else
 			{
-				return _adsClient.ReadAny<T>(0xF302, ToIndexOffset(address));
+				return _adsClient.ReadAny<T>(AdsCoEIndexGroup, ToIndexOffset(address));
 			}
 		}
 
@@ -376,22 +398,30 @@ namespace TwinCAT.Mdp
 
 			if (typeof(T) == typeof(string))
 			{
-				var result = await _adsClient.ReadAnyAsync<T>(
-					0xF302,
+				var result = await _adsClient.ReadAnyStringAsync(
+					AdsCoEIndexGroup,
 					ToIndexOffset(address),
-					new int[] { 255 },
-					cancel
+					255,
+					System.Text.Encoding.ASCII,
+				cancel
 				);
-				return result.Value;
+
+				result.ThrowOnError();
+
+				return (T)Convert.ChangeType(result.Value, typeof(T));
 			}
 			else
 			{
-				var result = await _adsClient.ReadAnyAsync<T>(
-					0xF302,
+				var result = await _adsClient.ReadAnyAsync(
+					AdsCoEIndexGroup,
 					ToIndexOffset(address),
+					typeof(T),
 					cancel
 				);
-				return result.Value;
+
+				result.ThrowOnError();
+
+				return (T)Convert.ChangeType(result.Value, typeof(T));
 			}
 		}
 
@@ -413,7 +443,7 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			return _adsClient.Read(0xF302, ToIndexOffset(address), readBuffer);
+			return _adsClient.Read(AdsCoEIndexGroup, ToIndexOffset(address), readBuffer);
 		}
 
 		/// <summary>
@@ -439,7 +469,7 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			return _adsClient.ReadAsync(0xF302, ToIndexOffset(address), readBuffer, cancel);
+			return _adsClient.ReadAsync(AdsCoEIndexGroup, ToIndexOffset(address), readBuffer, cancel);
 		}
 
 		/// <summary>
@@ -464,7 +494,20 @@ namespace TwinCAT.Mdp
 				throw new ArgumentNullException("value");
 			}
 
-			_adsClient.WriteAny(0xF302, ToIndexOffset(address), value);
+			if (!IsValidDataType(value.GetType()))
+			{
+				throw new ArgumentException(value.GetType().ToString());
+			}
+
+			if (value.GetType() == typeof(string))
+			{
+				string data = Convert.ToString(value);
+				_adsClient.WriteAnyString(AdsCoEIndexGroup, ToIndexOffset(address), data, data.Length, System.Text.Encoding.ASCII);
+			}
+			else
+			{
+				_adsClient.WriteAny(AdsCoEIndexGroup, ToIndexOffset(address), value);
+			}
 		}
 
 		/// <summary>
@@ -474,7 +517,7 @@ namespace TwinCAT.Mdp
 		/// <param name="value">The data to write.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>A task object that represents the asynchronous operation.</returns>
-		public Task WriteAnyAsync(MdpAddress address, object value, CancellationToken cancel)
+		public async Task WriteAnyAsync(MdpAddress address, object value, CancellationToken cancel)
 		{
 			if (this._disposed)
 			{
@@ -491,7 +534,22 @@ namespace TwinCAT.Mdp
 				throw new ArgumentNullException("value");
 			}
 
-			return _adsClient.WriteAnyAsync(0xF302, ToIndexOffset(address), value, cancel);
+			if (!IsValidDataType(value.GetType()))
+			{
+				throw new ArgumentException(value.GetType().ToString());
+			}
+
+			if (value.GetType() == typeof(string))
+			{
+				string data = Convert.ToString(value);
+				var result = await _adsClient.WriteAnyStringAsync(AdsCoEIndexGroup, ToIndexOffset(address), data, data.Length, System.Text.Encoding.ASCII, cancel);
+				result.ThrowOnError();
+			}
+			else
+			{
+				var result = await _adsClient.WriteAnyAsync(AdsCoEIndexGroup, ToIndexOffset(address), value, cancel);
+				result.ThrowOnError();
+			}
 		}
 
 		/// <summary>
@@ -511,7 +569,7 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			_adsClient.Write(0xF302, ToIndexOffset(address), writeBuffer);
+			_adsClient.Write(AdsCoEIndexGroup, ToIndexOffset(address), writeBuffer);
 		}
 
 		/// <summary>
@@ -521,7 +579,7 @@ namespace TwinCAT.Mdp
 		/// <param name="writeBuffer">The buffer containing the data to write.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>A task object that represents the asynchronous operation.</returns>
-		public Task WriteAsync(
+		public async Task WriteAsync(
 			MdpAddress address,
 			ReadOnlyMemory<byte> writeBuffer,
 			CancellationToken cancel
@@ -537,7 +595,8 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			return _adsClient.WriteAsync(0xF302, ToIndexOffset(address), writeBuffer, cancel);
+			var result = await _adsClient.WriteAsync(AdsCoEIndexGroup, ToIndexOffset(address), writeBuffer, cancel);
+			result.ThrowOnError();
 		}
 
 		/// <summary>
@@ -587,7 +646,7 @@ namespace TwinCAT.Mdp
 		}
 
 		/// <summary>
-		/// Reads a parameter from the specified MDP address with the given data type asynchronously.
+		/// Reads a parameter from the specified MDP address with the given data type.
 		/// </summary>
 		/// <param name="moduleType">The MDP module type.</param>
 		/// <param name="tableID">The table ID.</param>
@@ -798,6 +857,113 @@ namespace TwinCAT.Mdp
 		}
 
 		/// <summary>
+		/// Writes a parameter from the specified MDP address with the given data type.
+		/// </summary>
+		/// <param name="moduleType">The MDP module type.</param>
+		/// <param name="tableID">The table ID.</param>
+		/// <param name="subIndex">The sub-index.</param>
+		/// <param name="value">The data to read.</param>
+		/// <param name="moduleIndex">The module index (default is 1).</param>
+		/// <returns>Nothing.</returns>
+		public void WriteParameter(
+			ModuleType moduleType,
+			byte tableID,
+			byte subIndex,
+			object value, 
+			uint moduleIndex = 1
+		)
+		{
+			if (this._disposed)
+			{
+				throw new ObjectDisposedException("MdpClient");
+			}
+
+			if (!this.IsConnected)
+			{
+				throw new ClientNotConnectedException(_adsClient);
+			}
+
+			if (!IsValidDataType(value.GetType()))
+			{
+				throw new ArgumentException(value.GetType().ToString());
+			}
+
+			if (!_modules.Values.Contains(moduleType))
+			{
+				throw new ArgumentOutOfRangeException(nameof(moduleType));
+			}
+
+			var moduleID = GetModuleID(moduleType, moduleIndex);
+
+			WriteAny(
+				new MdpAddress
+				{
+					Area = MdpArea.Config,
+					ModuleID = moduleID,
+					Flag = 0,
+					TableID = tableID,
+					SubIndex = subIndex
+				},
+				value
+			);
+		}
+
+		/// <summary>
+		/// Writes a parameter from the specified MDP address with the given data type asynchronously.
+		/// </summary>
+		/// <param name="moduleType">The MDP module type.</param>
+		/// <param name="tableID">The table ID.</param>
+		/// <param name="subIndex">The sub-index.</param>
+		/// <param name="type">The data type to read.</param>
+		/// <param name="moduleIndex">The module index (default is 1).</param>
+		/// <param name="cancel">Cancellation Token.</param>
+		/// <returns>A task object that represents the asynchronous operation.</returns>
+		public Task WriteParameterAsync(
+			ModuleType moduleType,
+			byte tableID,
+			byte subIndex,
+			object value,
+			CancellationToken cancel,
+			uint moduleIndex = 1
+		)
+		{
+			if (this._disposed)
+			{
+				throw new ObjectDisposedException("MdpClient");
+			}
+
+			if (!this.IsConnected)
+			{
+				throw new ClientNotConnectedException(_adsClient);
+			}
+
+			if (!IsValidDataType(value.GetType()))
+			{
+				throw new ArgumentException(value.GetType().ToString());
+			}
+
+			if (!_modules.Values.Contains(moduleType))
+			{
+				throw new ArgumentOutOfRangeException(nameof(moduleType));
+			}
+
+			var moduleID = GetModuleID(moduleType, moduleIndex);
+
+			return WriteAnyAsync(
+				new MdpAddress
+				{
+					Area = MdpArea.Config,
+					ModuleID = moduleID,
+					Flag = 0,
+					TableID = tableID,
+					SubIndex = subIndex
+				},
+				value,
+				cancel
+			);
+		}
+
+		/// <summary>
 		/// Converts a MDP module type to the corresponding unique module ID.
 		/// </summary>
 		/// <param name="moduleType">MDP module type.</param>
@@ -871,7 +1037,7 @@ namespace TwinCAT.Mdp
 
 		private ModuleInfo ScanModule(uint address)
 		{
-			var mdpModule = (uint)_adsClient.ReadAny(0xF302, address, typeof(uint));
+			var mdpModule = (uint)_adsClient.ReadAny(AdsCoEIndexGroup, address, typeof(uint));
 
 			return new ModuleInfo
 			{
@@ -882,7 +1048,7 @@ namespace TwinCAT.Mdp
 
 		private async Task<ModuleInfo> ScanModuleAsync(uint address, CancellationToken cancel)
 		{
-			var mdpModule = await _adsClient.ReadAnyAsync(0xF302, address, typeof(uint), cancel);
+			var mdpModule = await _adsClient.ReadAnyAsync(AdsCoEIndexGroup, address, typeof(uint), cancel);
 
 			return new ModuleInfo
 			{
