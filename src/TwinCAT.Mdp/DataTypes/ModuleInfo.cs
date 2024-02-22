@@ -6,7 +6,7 @@ namespace TwinCAT.Mdp.DataTypes
 {
 	public class ModuleInfo
 	{
-		public uint ID;
+		public ushort ID;
 		public ModuleType Type;
 	}
 }

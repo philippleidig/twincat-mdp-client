@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TwinCAT.Mdp.DataTypes
 {
-	public enum ModuleType
+	public enum ModuleType : ushort
 	{
 		NIC = 0x0002,
 		Time = 0x0003,
@@ -33,5 +33,5 @@ namespace TwinCAT.Mdp.DataTypes
 		PhysicalDrive = 0x001F,
 		MassStorage = 0x0020,
 		Misc = 0x0100
-	}
+	} 
 }

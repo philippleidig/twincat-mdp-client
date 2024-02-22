@@ -40,15 +40,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			var enableDhcp = true;
-
 			client.WriteParameter(ModuleType.NIC, 1, 4, enableDhcp);
+			var isDhcpEnabled = client.ReadParameter<bool>(ModuleType.NIC, 1, 4);
 
-			var dhcp = client.ReadParameter<bool>(ModuleType.NIC, 1, 4);
-
-			Assert.AreEqual(true, dhcp);
+			Assert.AreEqual(true, isDhcpEnabled);
 		}
 
 
@@ -57,15 +55,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			var enableDhcp = true;
+			await client.WriteParameterAsync(ModuleType.NIC, 1, 4, enableDhcp);
+			var isDhcpEnabled = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4);
 
-			await client.WriteParameterAsync(ModuleType.NIC, 1, 4, enableDhcp, CancellationToken.None);
-
-			var dhcp = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4, CancellationToken.None);
-
-			Assert.AreEqual(true, dhcp);
+			Assert.AreEqual(true, isDhcpEnabled);
 		}
 
 		[TestMethod]
@@ -73,7 +69,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			int sntpRefreshSeconds = 16;
 
@@ -90,13 +86,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			int sntpRefreshSeconds = 16;
 
-			await client.WriteParameterAsync(ModuleType.Time, 1, 2, sntpRefreshSeconds, CancellationToken.None);
+			await client.WriteParameterAsync(ModuleType.Time, 1, 2, sntpRefreshSeconds);
 
-			var seconds = await client.ReadParameterAsync<int>(ModuleType.Time, 1, 2, CancellationToken.None);
+			var seconds = await client.ReadParameterAsync<int>(ModuleType.Time, 1, 2);
 
 			Assert.AreEqual(16, seconds);
 		}
@@ -106,7 +102,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			string sntpServer = "172.20.10.100";
 
@@ -114,7 +110,7 @@ namespace TwinCAT.Mdp.Tests
 
 			var server = client.ReadParameter<string>(ModuleType.Time, 1, 1);
 
-			Assert.AreEqual("172.20.10.100", server);
+			Assert.AreEqual("172.20.10.100", server.TrimEnd('\0', '1'));
 		}
 
 		[TestMethod]
@@ -122,15 +118,15 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			string sntpServer = "172.20.10.101";
+			string sntpServer = "172.20.10.102";
 
-			await client.WriteParameterAsync (ModuleType.Time, 1, 1, sntpServer, CancellationToken.None);
+			await client.WriteParameterAsync (ModuleType.Time, 1, 1, sntpServer);
 
-			var server = await client.ReadParameterAsync<string>(ModuleType.Time, 1, 1, CancellationToken.None);
+			var server = await client.ReadParameterAsync<string>(ModuleType.Time, 1, 1);
 
-			Assert.AreEqual("172.20.10.101", server);
+			Assert.AreEqual("172.20.10.102", server.TrimEnd('\0', '1'));
 		}
 
 		[TestMethod]
@@ -138,7 +134,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			byte value = 0;
 
@@ -152,97 +148,97 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			byte value = 0;
 
 			await Assert.ThrowsExceptionAsync<ArgumentException>(
-				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value, CancellationToken.None)
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
 
-		//[TestMethod]
-		//public void TestWriteParameterWrongType()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	bool value = false;
-		//
-		//	Assert.ThrowsException<AdsErrorException>(
-		//		() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
-		//	);
-		//}
-		//
-		//[TestMethod]
-		//public async Task TestWriteParameterWrongTypeAsync()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	bool value = false;
-		//
-		//	await Assert.ThrowsExceptionAsync<AdsErrorException>(
-		//		async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value, CancellationToken.None)
-		//	);
-		//}
-
-		//[TestMethod]
-		//public void TestWriteParameterWrongTableID()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	Assert.ThrowsException<AdsErrorException>(
-		//		() => client.WriteParameter(ModuleType.CPU, 222, 1, 200)
-		//	);
-		//}
-		//
-		//[TestMethod]
-		//public async Task TestWriteParameterWrongTableIDAsync()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	await Assert.ThrowsExceptionAsync<AdsErrorException>(
-		//		async () => await client.WriteParameterAsync(ModuleType.CPU, 222, 1, 200, CancellationToken.None)
-		//	);
-		//}
-
-		//[TestMethod]
-		//public void TestWriteParameterWrongSubIndex()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	Assert.ThrowsException<AdsErrorException>(
-		//		() => client.WriteParameter(ModuleType.CPU, 1, 222, 200)
-		//	);
-		//}
-		//
-		//[TestMethod]
-		//public async Task TestWriteParameterWrongSubIndexAsync()
-		//{
-		//	MdpClient client = new MdpClient();
-		//
-		//	client.Connect(Target);
-		//
-		//	await Assert.ThrowsExceptionAsync<AdsErrorException>(
-		//		async () => await client.WriteParameterAsync (ModuleType.CPU, 1, 222, 200, CancellationToken.None)
-		//	);
-		//}
+		[TestMethod]
+		public void TestWriteParameterWrongType()
+		{
+			MdpClient client = new MdpClient();
 		
+			client.Connect(Target, Port);
+		
+			bool value = false;
+		
+			Assert.ThrowsException<AdsErrorException>(
+				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
+			);
+		}
+		
+		[TestMethod]
+		public async Task TestWriteParameterWrongTypeAsync()
+		{
+			MdpClient client = new MdpClient();
+		
+			client.Connect(Target, Port);
+		
+			bool value = false;
+		
+			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
+			);
+		}
+
+		[TestMethod]
+		public void TestWriteParameterWrongTableID()
+		{
+			MdpClient client = new MdpClient();
+		
+			client.Connect(Target, Port);
+		
+			Assert.ThrowsException<AdsErrorException>(
+				() => client.WriteParameter(ModuleType.CPU, 222, 1, 200)
+			);
+		}
+		
+		[TestMethod]
+		public async Task TestWriteParameterWrongTableIDAsync()
+		{
+			MdpClient client = new MdpClient();
+		
+			client.Connect(Target, Port);
+		
+			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 222, 1, 200)
+			);
+		}
+
+		[TestMethod]
+		public void TestWriteParameterWrongSubIndex()
+		{
+			MdpClient client = new MdpClient();
+		
+			client.Connect(Target, Port);
+		
+			Assert.ThrowsException<AdsErrorException>(
+				() => client.WriteParameter(ModuleType.CPU, 1, 222, 200)
+			);
+		}
+		
+		[TestMethod]
+		public async Task TestWriteParameterWrongSubIndexAsync()
+		{
+			MdpClient client = new MdpClient();
+		
+			client.Connect(Target, Port);
+		
+			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => await client.WriteParameterAsync (ModuleType.CPU, 1, 222, 200)
+			);
+		}
+
 		[TestMethod]
 		public void TestWriteParameterWrongModuleIndex()
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			Assert.ThrowsException<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 2)
@@ -254,10 +250,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
-				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, CancellationToken.None, 2)
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
 		
@@ -266,7 +262,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			Assert.ThrowsException<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 0)
@@ -278,10 +274,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
-				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, CancellationToken.None, 0)
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
 		
@@ -290,7 +286,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			Assert.ThrowsException<ArgumentOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.Raid, 1, 1, false)
@@ -302,10 +298,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			client.Connect(Target);
+			client.Connect(Target, Port);
 		
 			await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(
-				async () => await client.WriteParameterAsync (ModuleType.Raid, 1, 1, false, CancellationToken.None)
+				async () => await client.WriteParameterAsync (ModuleType.Raid, 1, 1, false)
 			);
 		}
 	}

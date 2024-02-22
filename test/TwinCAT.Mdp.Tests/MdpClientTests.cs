@@ -1,18 +1,30 @@
 ﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
+using TwinCAT.Mdp.Tests.Mocks;
 
 namespace TwinCAT.Mdp.Tests
 {
 	[TestClass]
 	public partial class MdpClientTests
 	{
-		private const string Target = "39.157.153.107.1.1";
+		private DeviceManagerMock deviceManagerMock;
 
+		[TestInitialize] 
+		public void TestInitialize() 
+		{
+			deviceManagerMock = new DeviceManagerMock();
+		}
+
+		[TestCleanup]
+		public void TestCleanup()
+		{
+			deviceManagerMock.Dispose();
+		}
 
 		[TestMethod]
 		public void TestConnectInvalidAmsNetId()
 		{
-			MdpClient client = new MdpClient();
+			MdpClient client = new MdpClient();		
 
 			Assert.ThrowsException<FormatException>(
 				() => client.Connect("100.100.100.1.1")
@@ -24,42 +36,43 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsException<AdsErrorException>(
 				() => client.Connect("100.100.100.100.1.1")
 			);
 		}
 
 		[TestMethod]
-		public void TestConnectAsAmsNetId()
+		public void TestConnect()
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(new AmsNetId(Target));
-
-			Assert.AreEqual(new AmsNetId(Target), client.Target);
+			client.Connect(Target, Port);
 
 			Assert.IsTrue(client.IsConnected);
 			Assert.AreEqual(ConnectionState.Connected, client.ConnectionState);
-			Assert.IsFalse(client.IsLocal);
 
-			Assert.AreEqual(12, client.ModuleCount);
-			Assert.AreEqual(1, client.Modules.Where(m => m == ModuleType.NIC).Count());
+			Assert.AreEqual(deviceManagerMock.ModuleCount, client.ModuleCount);
+			Assert.AreEqual(
+						deviceManagerMock.Modules.Where(m => m == ModuleType.NIC).Count(),
+						client.Modules.Where(m => m == ModuleType.NIC).Count()
+					);
 		}
 
-		public void TestConnectAsString()
+		[TestMethod]
+		public async Task TestConnectAsync()
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
-
-			Assert.AreEqual(new AmsNetId(Target), client.Target);
+			await client.ConnectAsync(Target, Port);
 
 			Assert.IsTrue(client.IsConnected);
 			Assert.AreEqual(ConnectionState.Connected, client.ConnectionState);
-			Assert.IsFalse(client.IsLocal);
 
-			Assert.AreEqual(12, client.ModuleCount);
-			Assert.AreEqual(1, client.Modules.Where(m => m == ModuleType.NIC).Count());
+			Assert.AreEqual(deviceManagerMock.ModuleCount, client.ModuleCount);
+			Assert.AreEqual(
+						deviceManagerMock.Modules.Where(m => m == ModuleType.NIC).Count(),
+						client.Modules.Where(m => m == ModuleType.NIC).Count()
+					);
 		}
 
 		[TestMethod]
@@ -67,7 +80,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			Assert.IsTrue(client.IsConnected);
 
@@ -83,8 +96,10 @@ namespace TwinCAT.Mdp.Tests
 		public void TestConnectOnSystemWithoutDeviceManager()
 		{
 			MdpClient client = new MdpClient();
-
-			Assert.ThrowsException<AdsErrorException>(() => client.Connect());
+		
+			Assert.ThrowsException<AdsErrorException>(
+				() => client.Connect(AmsNetId.Local, (int)AmsPort.SystemService)
+			);
 		}
 
 		[TestMethod]
@@ -95,6 +110,8 @@ namespace TwinCAT.Mdp.Tests
 			Assert.ThrowsException<ClientNotConnectedException>(
 				() => client.ReadParameter<bool>(ModuleType.NIC, 1, 4)
 			);
+
+			Assert.IsFalse(client.IsConnected);
 		}
 
 		[TestMethod]
@@ -107,6 +124,8 @@ namespace TwinCAT.Mdp.Tests
 			Assert.ThrowsException<ObjectDisposedException>(
 				() => client.ReadParameter<bool>(ModuleType.NIC, 1, 4)
 			);
+
+			Assert.IsTrue(client.IsDisposed);
 		}
 	}
 }

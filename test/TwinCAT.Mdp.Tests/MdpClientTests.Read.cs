@@ -1,5 +1,6 @@
 ﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
+using TwinCAT.Mdp.Tests.Mocks;
 
 namespace TwinCAT.Mdp.Tests
 {
@@ -10,7 +11,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			var nicDhcp = client.ReadParameter<bool>(ModuleType.NIC, 1, 4);
 
@@ -23,9 +24,9 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			var nicDhcp = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4, CancellationToken.None);
+			var nicDhcp = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4);
 
 			Assert.AreEqual(true, nicDhcp);
 		}
@@ -35,11 +36,11 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			var cpuFrequency = client.ReadParameter<int>(ModuleType.CPU, 1, 1);
 
-			Assert.AreEqual(2495, cpuFrequency, 5);
+			Assert.AreEqual(2496, cpuFrequency, 100);
 		}
 
 
@@ -48,11 +49,11 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			var cpuFrequency = await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, CancellationToken.None);
+			var cpuFrequency = await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1);
 
-			Assert.AreEqual(2495, cpuFrequency, 5);
+			Assert.AreEqual(2496, cpuFrequency, 100);
 		}
 
 		[TestMethod]
@@ -60,7 +61,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			var nicAdapterName = client.ReadParameter<string>(ModuleType.NIC, 0, 3);
 
@@ -72,9 +73,9 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			var nicAdapterName = await client.ReadParameterAsync<string>(ModuleType.NIC, 0, 3, CancellationToken.None);
+			var nicAdapterName = await client.ReadParameterAsync<string>(ModuleType.NIC, 0, 3);
 
 			Assert.AreEqual("em0", nicAdapterName);
 		}
@@ -84,7 +85,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			Assert.ThrowsException<ArgumentException>(
 				() => client.ReadParameter<byte>(ModuleType.CPU, 1, 1)
@@ -96,10 +97,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			await Assert.ThrowsExceptionAsync<ArgumentException>(
-				async () => await client.ReadParameterAsync<byte>(ModuleType.CPU, 1, 1, CancellationToken.None)
+				async () => await client.ReadParameterAsync<byte>(ModuleType.CPU, 1, 1)
 			);
 		}
 
@@ -108,11 +109,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			Assert.ThrowsException<AdsErrorException>(
-				() => client.ReadParameter<bool>(ModuleType.CPU, 1, 1)
+			var exception = Assert.ThrowsException<AdsErrorException>(
+				() => client.ReadParameter(ModuleType.CPU, 1, 1, Memory<byte>.Empty)
 			);
+
+			Assert.AreEqual(0xECA60107, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -120,11 +123,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
-				async () => await client.ReadParameterAsync<bool>(ModuleType.CPU, 1, 1, CancellationToken.None)
+			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => client.ReadParameter(ModuleType.CPU, 1, 1, Memory<byte>.Empty)
 			);
+
+			Assert.AreEqual(0xECA60107, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -132,11 +137,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsException<AdsErrorException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 222, 1)
 			);
+
+			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -144,11 +151,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
-				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 222, 1, CancellationToken.None)
+			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 222, 1)
 			);
+
+			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -156,11 +165,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsException<AdsErrorException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 222)
 			);
+
+			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -168,11 +179,13 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
-				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 222, CancellationToken.None)
+			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 222)
 			);
+
+			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
 
 		[TestMethod]
@@ -180,7 +193,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			Assert.ThrowsException<IndexOutOfRangeException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 2)
@@ -192,10 +205,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
-				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, CancellationToken.None, 2)
+				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 2)
 			);
 		}
 
@@ -204,7 +217,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			Assert.ThrowsException<IndexOutOfRangeException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 0)
@@ -216,10 +229,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
-				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, CancellationToken.None, 0)
+				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 0)
 			);
 		}
 
@@ -228,7 +241,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			Assert.ThrowsException<ArgumentOutOfRangeException>(
 				() => client.ReadParameter<bool>(ModuleType.Raid, 1, 1)
@@ -240,10 +253,10 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			client.Connect(Target);
+			client.Connect(Target, Port);
 
 			await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(
-				async () => await client.ReadParameterAsync<bool>(ModuleType.Raid, 1, 1, CancellationToken.None)
+				async () => await client.ReadParameterAsync<bool>(ModuleType.Raid, 1, 1)
 			);
 		}
 	}

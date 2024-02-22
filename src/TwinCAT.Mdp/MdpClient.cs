@@ -107,7 +107,9 @@ namespace TwinCAT.Mdp
 		/// Connects to the target MDP Device.
 		/// </summary>
 		/// <param name="target">The AmsNetId of the target device.</param>
-		public void Connect(AmsNetId target)
+		public void Connect(AmsNetId target) => this.Connect(target, (int)AmsPort.SystemService);
+
+		internal void Connect(AmsNetId target, int port)
 		{
 			if (this._disposed)
 			{
@@ -121,12 +123,11 @@ namespace TwinCAT.Mdp
 
 			_target = target;
 
-			this._adsClient.ConnectionStateChanged += (s, e) =>
-			{
+			this._adsClient.ConnectionStateChanged += (s, e) => {
 				this.ConnectionStateChanged?.Invoke(s, e);
 			};
 
-			this._adsClient.Connect(target, AmsPort.SystemService);
+			this._adsClient.Connect(target, port);
 
 			this.ScanModules();
 		}
@@ -137,7 +138,10 @@ namespace TwinCAT.Mdp
 		/// <param name="target">The AmsNetId of the target device.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>Returns a task object that represents the operation.</returns>
-		public async Task ConnectAsync(AmsNetId target, CancellationToken cancel)
+		public Task ConnectAsync(AmsNetId target, CancellationToken cancel = default)
+			=> ConnectAsync(target, (int)AmsPort.SystemService, cancel);
+
+		internal Task ConnectAsync (AmsNetId target, int port, CancellationToken cancel = default)
 		{
 			if (this._disposed)
 			{
@@ -150,9 +154,14 @@ namespace TwinCAT.Mdp
 			}
 
 			_target = target;
-			this._adsClient.Connect(target, AmsPort.SystemService);
 
-			await this.ScanModulesAsync(cancel);
+			this._adsClient.ConnectionStateChanged += (s, e) => {
+				this.ConnectionStateChanged?.Invoke(s, e);
+			};
+
+			this._adsClient.Connect(target, port);
+
+			return this.ScanModulesAsync(cancel);
 		}
 
 		/// <summary>
@@ -171,7 +180,7 @@ namespace TwinCAT.Mdp
 		/// </summary>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>Returns a task object that represents the operation.</returns>
-		public Task ConnectAsync(CancellationToken cancel) =>
+		public Task ConnectAsync(CancellationToken cancel = default) =>
 			this.ConnectAsync(AmsNetId.Local, cancel);
 
 		/// <summary>
@@ -180,7 +189,7 @@ namespace TwinCAT.Mdp
 		/// <param name="target"></param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>Returns a task object that represents the operation.</returns>
-		public Task ConnectAsync(string target, CancellationToken cancel) =>
+		public Task ConnectAsync(string target, CancellationToken cancel = default) =>
 			this.ConnectAsync(AmsNetId.Parse(target), cancel);
 
 		/// <summary>
@@ -290,7 +299,7 @@ namespace TwinCAT.Mdp
 		public async Task<object> ReadAnyAsync(
 			MdpAddress address,
 			Type type,
-			CancellationToken cancel
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -378,7 +387,7 @@ namespace TwinCAT.Mdp
 		/// <param name="address">The MDP address to read.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>A task object that represents the asynchronous operation.</returns>
-		public async Task<T> ReadAnyAsync<T>(MdpAddress address, CancellationToken cancel)
+		public async Task<T> ReadAnyAsync<T>(MdpAddress address, CancellationToken cancel = default)
 		{
 			if (this._disposed)
 			{
@@ -455,7 +464,7 @@ namespace TwinCAT.Mdp
 		public Task<ResultRead> ReadAsync(
 			MdpAddress address,
 			Memory<byte> readBuffer,
-			CancellationToken cancel
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -516,7 +525,7 @@ namespace TwinCAT.Mdp
 		/// <param name="value">The data to write.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>A task object that represents the asynchronous operation.</returns>
-		public async Task WriteAnyAsync(MdpAddress address, object value, CancellationToken cancel)
+		public async Task WriteAnyAsync(MdpAddress address, object value, CancellationToken cancel = default)
 		{
 			if (this._disposed)
 			{
@@ -581,7 +590,7 @@ namespace TwinCAT.Mdp
 		public async Task WriteAsync(
 			MdpAddress address,
 			ReadOnlyMemory<byte> writeBuffer,
-			CancellationToken cancel
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -712,8 +721,8 @@ namespace TwinCAT.Mdp
 			byte tableID,
 			byte subIndex,
 			Type type,
-			CancellationToken cancel,
-			uint moduleIndex = 1
+			uint moduleIndex = 1,
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -816,8 +825,8 @@ namespace TwinCAT.Mdp
 			ModuleType moduleType,
 			byte tableID,
 			byte subIndex,
-			CancellationToken cancel,
-			uint moduleIndex = 1
+			uint moduleIndex = 1,
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -922,8 +931,8 @@ namespace TwinCAT.Mdp
 			byte tableID,
 			byte subIndex,
 			object value,
-			CancellationToken cancel,
-			uint moduleIndex = 1
+			uint moduleIndex = 1,
+			CancellationToken cancel = default
 		)
 		{
 			if (this._disposed)
@@ -974,11 +983,6 @@ namespace TwinCAT.Mdp
 				moduleIndex - 1
 			];
 
-			if (moduleID == 0)
-			{
-				throw new IndexOutOfRangeException();
-			}
-
 			return moduleID;
 		}
 
@@ -987,7 +991,7 @@ namespace TwinCAT.Mdp
 			return (ushort)_adsClient.ReadAny(0xF302, 0xF0200000, typeof(ushort));
 		}
 
-		private async Task<int> GetModuleCountAsync(CancellationToken cancel)
+		private async Task<int> GetModuleCountAsync(CancellationToken cancel = default)
 		{
 			var result = await _adsClient.ReadAnyAsync(
 				0xF302,
@@ -1004,7 +1008,7 @@ namespace TwinCAT.Mdp
 		{
 			var moduleCount = this.GetModuleCount();
 
-			for (int i = 0; i < moduleCount + 1; i++)
+			for (int i = 1; i <= moduleCount; i++)
 			{
 				try
 				{
@@ -1019,11 +1023,11 @@ namespace TwinCAT.Mdp
 			}
 		}
 
-		private async Task ScanModulesAsync(CancellationToken cancel)
+		private async Task ScanModulesAsync(CancellationToken cancel = default)
 		{
 			var moduleCount = await this.GetModuleCountAsync(cancel);
 
-			for (int i = 0; i < moduleCount + 1; i++)
+			for (int i = 1; i <= moduleCount; i++)
 			{
 				var moduleInfo = await this.ScanModuleAsync((uint)(0xF0200000 + i), cancel);
 
@@ -1036,23 +1040,23 @@ namespace TwinCAT.Mdp
 
 		private ModuleInfo ScanModule(uint address)
 		{
-			var mdpModule = (uint)_adsClient.ReadAny(AdsCoEIndexGroup, address, typeof(uint));
+			var mdpModule = _adsClient.ReadAny<uint>(AdsCoEIndexGroup, address);
 
 			return new ModuleInfo
 			{
-				ID = mdpModule,
+				ID = (ushort)(mdpModule & 0x0000FFFF),
 				Type = (ModuleType)((mdpModule & 0xFFFF0000) >> 16)
 			};
 		}
 
-		private async Task<ModuleInfo> ScanModuleAsync(uint address, CancellationToken cancel)
+		private async Task<ModuleInfo> ScanModuleAsync(uint address, CancellationToken cancel = default)
 		{
-			var mdpModule = await _adsClient.ReadAnyAsync(AdsCoEIndexGroup, address, typeof(uint), cancel);
+			var mdpModule = await _adsClient.ReadAnyAsync<uint>(AdsCoEIndexGroup, address, cancel);
 
 			return new ModuleInfo
 			{
-				ID = (uint)mdpModule.Value,
-				Type = (ModuleType)(((uint)mdpModule.Value & 0xFFFF0000) >> 16)
+				ID = (ushort)(mdpModule.Value & 0x0000FFFF),
+				Type = (ModuleType)((mdpModule.Value & 0xFFFF0000) >> 16)
 			};
 		}
 
