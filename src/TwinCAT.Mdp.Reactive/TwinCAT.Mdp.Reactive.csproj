@@ -26,6 +26,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.md" Pack="true" PackagePath=""/>
-    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
-    <None Include="..\..\assets\images\twincat.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\assets\images\twincat.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

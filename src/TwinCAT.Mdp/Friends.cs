@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
-[assembly: InternalsVisibleTo("TwinCAT.Mdp.Tests")]
-[assembly: InternalsVisibleTo("TwinCAT.Mdp.Reactive.Tests")]
+[assembly: InternalsVisibleTo("TwinCAT.Mdp.Tests, PublicKey = 0024000004800000940000000602000000240000525341310004000001000100bdedda201c6f4120c061401134e44b6b56b63f7b7bd69bef1cfd12628a53b8077cf52791faf81be7d796a36317abf751c2bf74f4e38dbd16b6166fee1644bdd7bd8e9237bc931d4edff57598abd88cf11a3a0c7fa55244f5f466ec276da9c43c8ce8d2998aa1306b8605ccbaa7cd92c8aaadb85fe6f7bf21bc57ff28675d85e3")]
 
