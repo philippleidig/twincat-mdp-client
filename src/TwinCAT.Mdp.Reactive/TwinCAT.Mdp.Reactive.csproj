@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>0.2.2</PackageVersion>
+    <AssemblyVersion>0.2.3</AssemblyVersion>
+    <FileVersion>0.2.3</FileVersion>
+    <PackageVersion>0.2.3</PackageVersion>
     <PackageId>Community.TwinCAT.Mdp.Reactive</PackageId>
     <Title>Community.Twincat.Mdp.Reactive</Title>
     <Authors>Philipp Leidig</Authors>
@@ -31,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="6.1.154" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="6.1.197" />
     <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
   </ItemGroup>
 
