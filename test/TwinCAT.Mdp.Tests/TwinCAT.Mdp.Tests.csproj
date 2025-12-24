@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -13,17 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="C:\Users\philipple\.nuget\packages\beckhoff.twincat.ads.tcprouter\6.1.197\contentFiles\any\net6.0\StaticRoutes.xml" />
+    <Content Remove="C:\Users\philipple\.nuget\packages\beckhoff.twincat.ads.tcprouter\6.1.197\contentFiles\any\net10.0\StaticRoutes.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Beckhoff.TwinCAT.Ads.Server" Version="6.1.197" />
     <PackageReference Include="Beckhoff.TwinCAT.Ads.TcpRouter" Version="6.1.197" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
   </ItemGroup>
 
   <ItemGroup>

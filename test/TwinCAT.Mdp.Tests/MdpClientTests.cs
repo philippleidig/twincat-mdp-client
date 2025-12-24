@@ -26,7 +26,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();		
 
-			Assert.ThrowsException<FormatException>(
+			Assert.ThrowsExactly<FormatException>(
 				() => client.Connect("100.100.100.1.1")
 			);
 		}
@@ -36,7 +36,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			var exception = Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsExactly<AdsErrorException>(
 				() => client.Connect("100.100.100.100.1.1")
 			);
 		}
@@ -97,7 +97,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 		
-			Assert.ThrowsException<AdsErrorException>(
+			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.Connect(AmsNetId.Local, (int)AmsPort.SystemService)
 			);
 		}
@@ -107,7 +107,7 @@ namespace TwinCAT.Mdp.Tests
 		{
 			MdpClient client = new MdpClient();
 
-			Assert.ThrowsException<ClientNotConnectedException>(
+			Assert.ThrowsExactly<ClientNotConnectedException>(
 				() => client.ReadParameter<bool>(ModuleType.NIC, 1, 4)
 			);
 
@@ -121,7 +121,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Dispose();
 
-			Assert.ThrowsException<ObjectDisposedException>(
+			Assert.ThrowsExactly<ObjectDisposedException>(
 				() => client.ReadParameter<bool>(ModuleType.NIC, 1, 4)
 			);
 

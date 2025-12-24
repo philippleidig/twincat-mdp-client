@@ -87,7 +87,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => client.ReadParameter<byte>(ModuleType.CPU, 1, 1)
 			);
 		}
@@ -99,7 +99,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<ArgumentException>(
+			await Assert.ThrowsExactlyAsync<ArgumentException>(
 				async () => await client.ReadParameterAsync<byte>(ModuleType.CPU, 1, 1)
 			);
 		}
@@ -111,7 +111,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsExactly<AdsErrorException>(
 				() => client.ReadParameter(ModuleType.CPU, 1, 1, Memory<byte>.Empty)
 			);
 
@@ -125,7 +125,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			var exception = await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => client.ReadParameter(ModuleType.CPU, 1, 1, Memory<byte>.Empty)
 			);
 
@@ -139,7 +139,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsExactly<AdsErrorException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 222, 1)
 			);
 
@@ -153,7 +153,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			var exception = await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 222, 1)
 			);
 
@@ -167,7 +167,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = Assert.ThrowsException<AdsErrorException>(
+			var exception = Assert.ThrowsExactly<AdsErrorException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 222)
 			);
 
@@ -181,7 +181,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			var exception = await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			var exception = await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 222)
 			);
 
@@ -195,7 +195,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			Assert.ThrowsException<IndexOutOfRangeException>(
+			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 2)
 			);
 		}
@@ -207,7 +207,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 2)
 			);
 		}
@@ -219,7 +219,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			Assert.ThrowsException<IndexOutOfRangeException>(
+			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 0)
 			);
 		}
@@ -231,7 +231,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 0)
 			);
 		}
@@ -243,7 +243,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => client.ReadParameter<bool>(ModuleType.Raid, 1, 1)
 			);
 		}
@@ -255,7 +255,7 @@ namespace TwinCAT.Mdp.Tests
 
 			client.Connect(Target, Port);
 
-			await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(
 				async () => await client.ReadParameterAsync<bool>(ModuleType.Raid, 1, 1)
 			);
 		}

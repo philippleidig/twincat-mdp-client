@@ -16,7 +16,7 @@ namespace TwinCAT.Mdp.Tests
 		//
 		//	ushort tcMajorVersion = 4;
 		//
-		//	Assert.ThrowsException<ArgumentException>(
+		//	Assert.ThrowsExactly<ArgumentException>(
 		//		() => client.WriteParameter(ModuleType.TwinCAT, 1, 1, tcMajorVersion)
 		//	);
 		//}
@@ -30,7 +30,7 @@ namespace TwinCAT.Mdp.Tests
 		//
 		//	ushort tcMajorVersion = 4;
 		//
-		//	await Assert.ThrowsExceptionAsync<ArgumentException>(
+		//	await Assert.ThrowsExactlyAsync<ArgumentException>(
 		//		async () => await client.WriteParameterAsync(ModuleType.TwinCAT, 1, 1, tcMajorVersion, CancellationToken.None)
 		//	);
 		//}
@@ -138,7 +138,7 @@ namespace TwinCAT.Mdp.Tests
 
 			byte value = 0;
 
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
 			);
 		}
@@ -152,7 +152,7 @@ namespace TwinCAT.Mdp.Tests
 
 			byte value = 0;
 
-			await Assert.ThrowsExceptionAsync<ArgumentException>(
+			await Assert.ThrowsExactlyAsync<ArgumentException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
@@ -166,7 +166,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			bool value = false;
 		
-			Assert.ThrowsException<AdsErrorException>(
+			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
 			);
 		}
@@ -180,7 +180,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			bool value = false;
 		
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
@@ -192,7 +192,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			Assert.ThrowsException<AdsErrorException>(
+			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 222, 1, 200)
 			);
 		}
@@ -204,7 +204,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 222, 1, 200)
 			);
 		}
@@ -216,7 +216,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			Assert.ThrowsException<AdsErrorException>(
+			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 222, 200)
 			);
 		}
@@ -228,7 +228,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			await Assert.ThrowsExceptionAsync<AdsErrorException>(
+			await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.WriteParameterAsync (ModuleType.CPU, 1, 222, 200)
 			);
 		}
@@ -240,7 +240,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			Assert.ThrowsException<IndexOutOfRangeException>(
+			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
@@ -252,7 +252,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
@@ -264,7 +264,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			Assert.ThrowsException<IndexOutOfRangeException>(
+			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
@@ -276,7 +276,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			await Assert.ThrowsExceptionAsync<IndexOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
@@ -288,7 +288,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.Raid, 1, 1, false)
 			);
 		}
@@ -300,7 +300,7 @@ namespace TwinCAT.Mdp.Tests
 		
 			client.Connect(Target, Port);
 		
-			await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(
+			await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(
 				async () => await client.WriteParameterAsync (ModuleType.Raid, 1, 1, false)
 			);
 		}
