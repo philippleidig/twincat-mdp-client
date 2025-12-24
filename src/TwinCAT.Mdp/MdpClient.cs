@@ -44,7 +44,32 @@ namespace TwinCAT.Mdp
 
 			this._logger = logger;
 
-			_adsClient = new AdsClient(null, settings, _logger);
+			// TwinCAT.Ads 7.0 requires ILoggerFactory instead of ILogger
+			ILoggerFactory loggerFactory = logger != null
+				? new SimpleLoggerFactory(logger)
+				: null;
+
+			_adsClient = new AdsClient(null, settings, loggerFactory);
+		}
+
+		// Simple ILoggerFactory implementation to wrap a single ILogger instance
+		private class SimpleLoggerFactory : ILoggerFactory
+		{
+			private readonly ILogger _logger;
+
+			public SimpleLoggerFactory(ILogger logger)
+			{
+				_logger = logger;
+			}
+
+			public void AddProvider(ILoggerProvider provider) { }
+
+			public ILogger CreateLogger(string categoryName)
+			{
+				return _logger;
+			}
+
+			public void Dispose() { }
 		}
 
 		/// <summary>

@@ -35,9 +35,8 @@ namespace TwinCAT.Mdp.Tests.Mocks
         private string _portName = "";
         private AmsTcpIpRouter? _router;
 
-        public AdsServerMock(string portName) : base(portName)
+        public AdsServerMock(string portName) : base(0, portName)
         {
-
             Init(portName);
             Connect();
         }
@@ -48,22 +47,50 @@ namespace TwinCAT.Mdp.Tests.Mocks
             Connect();
         }
 
-        public AdsServerMock(string portName, ILogger? logger) : base(portName, logger)
+        public AdsServerMock(string portName, ILogger? logger) : base(0, portName, CreateLoggerFactory(logger))
         {
             Init(portName, logger);
             Connect();
         }
 
-        public AdsServerMock(ushort port, string portName, ILogger? logger) : base(port, portName, logger)
+        public AdsServerMock(ushort port, string portName, ILogger? logger) : base(port, portName, CreateLoggerFactory(logger))
         {
             Init(portName, logger);
             Connect();
         }
 
-        public AdsServerMock(ushort port, string portName, bool useSingleNotificationHandler, ILogger? logger) : base(port, portName, useSingleNotificationHandler, logger)
+        public AdsServerMock(ushort port, string portName, bool useSingleNotificationHandler, ILogger? logger)
+            : base(port, portName, null, CreateLoggerFactory(logger))
         {
             Init(portName, logger);
             Connect();
+        }
+
+        private static ILoggerFactory? CreateLoggerFactory(ILogger? logger)
+        {
+            if (logger == null)
+                return null;
+
+            return new SimpleLoggerFactory(logger);
+        }
+
+        private class SimpleLoggerFactory : ILoggerFactory
+        {
+            private readonly ILogger _logger;
+
+            public SimpleLoggerFactory(ILogger logger)
+            {
+                _logger = logger;
+            }
+
+            public void AddProvider(ILoggerProvider provider) { }
+
+            public ILogger CreateLogger(string categoryName)
+            {
+                return _logger;
+            }
+
+            public void Dispose() { }
         }
 
         public override bool Disconnect()

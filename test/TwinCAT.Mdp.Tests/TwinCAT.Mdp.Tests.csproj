@@ -13,12 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="C:\Users\philipple\.nuget\packages\beckhoff.twincat.ads.tcprouter\6.1.197\contentFiles\any\net10.0\StaticRoutes.xml" />
+    <Content Remove="C:\Users\philipple\.nuget\packages\beckhoff.twincat.ads.tcprouter\7.0.123\contentFiles\any\net10.0\StaticRoutes.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Server" Version="6.1.197" />
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.TcpRouter" Version="6.1.197" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Server" Version="7.0.132" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.TcpRouter" Version="7.0.123" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.2" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />

@@ -30,8 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="6.1.197" />
-    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="7.0.123" />
   </ItemGroup>
 
   <ItemGroup>
