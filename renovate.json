@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "labels": ["dependencies"],
+  "schedule": ["before 6am on monday"],
+  "timezone": "Europe/Berlin",
+  "packageRules": [
+    {
+      "matchManagers": ["nuget"],
+      "matchUpdateTypes": ["major"],
+      "enabled": true,
+      "automerge": false
+    },
+    {
+      "matchManagers": ["nuget"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": true,
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["Beckhoff.TwinCAT.*"],
+      "enabled": true,
+      "automerge": false,
+      "schedule": ["before 6am on the first day of the month"]
+    },
+    {
+      "matchManagers": ["dotnet-tools"],
+      "enabled": true,
+      "automerge": false
+    }
+  ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "commitMessagePrefix": "chore(deps):"
+}
