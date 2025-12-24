@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Projektmappenelemente/">
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/TwinCAT.Mdp.Reactive/TwinCAT.Mdp.Reactive.csproj" />
+  <Project Path="src/TwinCAT.Mdp/TwinCAT.Mdp.csproj" />
+  <Project Path="test/TwinCAT.Mdp.Tests/TwinCAT.Mdp.Tests.csproj" />
+</Solution>
