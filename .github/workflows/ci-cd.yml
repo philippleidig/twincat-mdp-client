@@ -29,11 +29,15 @@ jobs:
           configFile: '.commitlintrc.json'
 
   lint-and-format:
-    name: Lint and Format Check
+    name: Format Code
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -43,11 +47,23 @@ jobs:
       - name: Restore tools
         run: dotnet tool restore
 
-      - name: Check code formatting with CSharpier
-        run: dotnet csharpier --check .
+      - name: Format code with CSharpier
+        run: dotnet csharpier .
 
-      - name: Check code style with dotnet format
-        run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
+      - name: Format code with dotnet format
+        run: dotnet format ${{ env.SOLUTION_FILE }} --verbosity diagnostic
+
+      - name: Commit and push formatting changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if ! git diff --quiet; then
+            git add .
+            git commit -m "style: apply code formatting" -m "Automated formatting by GitHub Actions"
+            git push
+          else
+            echo "No formatting changes to commit"
+          fi
 
   build-and-test:
     name: Build and Test
