@@ -147,8 +147,15 @@ jobs:
         run: dotnet pack ${{ env.SOLUTION_FILE }} --configuration Release --no-build --output ./artifacts
 
       - name: Publish to NuGet.org
-        if: steps.check_version.outputs.changed == 'true' && secrets.NUGET_API_KEY != ''
-        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        if: steps.check_version.outputs.changed == 'true'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -n "$NUGET_API_KEY" ]; then
+            dotnet nuget push ./artifacts/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+          else
+            echo "NUGET_API_KEY secret not set, skipping NuGet publish"
+          fi
 
       - name: Create GitHub Release
         if: steps.check_version.outputs.changed == 'true'
