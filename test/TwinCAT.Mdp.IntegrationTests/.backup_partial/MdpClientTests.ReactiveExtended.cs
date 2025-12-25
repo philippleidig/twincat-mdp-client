@@ -118,7 +118,13 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var values = new List<object>();
 			var subscription = client
-				.PollParameterAsync(ModuleType.CPU, 1, 1, typeof(int), TimeSpan.FromMilliseconds(100))
+				.PollParameterAsync(
+					ModuleType.CPU,
+					1,
+					1,
+					typeof(int),
+					TimeSpan.FromMilliseconds(100)
+				)
 				.Take(3)
 				.Subscribe(value => values.Add(value));
 

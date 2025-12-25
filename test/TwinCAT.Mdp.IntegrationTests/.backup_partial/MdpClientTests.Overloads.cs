@@ -245,13 +245,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			CancellationTokenSource cts = new CancellationTokenSource();
 
-			var result = await client.ReadParameterAsync<int>(
-				ModuleType.CPU,
-				1,
-				1,
-				1,
-				cts.Token
-			);
+			var result = await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 1, cts.Token);
 
 			Assert.IsTrue(result > 0);
 		}

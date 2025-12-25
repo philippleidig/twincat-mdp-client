@@ -12,7 +12,7 @@ namespace TwinCAT.Mdp.UnitTests
 			MdpClient client = new MdpClient();
 
 			// Default timeout should be positive
-			Assert.IsTrue(client.Timeout > 0);
+			Assert.IsGreaterThan(0, client.Timeout);
 		}
 
 		[TestMethod]

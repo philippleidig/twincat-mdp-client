@@ -90,5 +90,5 @@ namespace TwinCAT.Mdp.DataTypes
 
 		/// <summary>Miscellaneous module for other functionality.</summary>
 		Misc = 0x0100
-	} 
+	}
 }

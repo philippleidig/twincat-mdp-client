@@ -26,10 +26,14 @@ namespace TwinCAT.Mdp.Reactive
 		)
 		{
 			return Observable.Select(
-				Observable.FromEventPattern<EventHandler<ConnectionStateChangedEventArgs>,ConnectionStateChangedEventArgs>(
+				Observable.FromEventPattern<
+					EventHandler<ConnectionStateChangedEventArgs>,
+					ConnectionStateChangedEventArgs
+				>(
 					h => connection.Connection.ConnectionStateChanged += h,
-					h => connection.Connection.ConnectionStateChanged -= h),
-					e => e.EventArgs.NewState
+					h => connection.Connection.ConnectionStateChanged -= h
+				),
+				e => e.EventArgs.NewState
 			);
 		}
 
@@ -165,7 +169,10 @@ namespace TwinCAT.Mdp.Reactive
 				throw new ArgumentNullException("connection");
 			}
 
-			return Observable.Select(trigger, o => connection.ReadParameter(moduleType, tableID, subIndex, type));
+			return Observable.Select(
+				trigger,
+				o => connection.ReadParameter(moduleType, tableID, subIndex, type)
+			);
 		}
 
 		/// <summary>
@@ -186,7 +193,7 @@ namespace TwinCAT.Mdp.Reactive
 			Type type,
 			TimeSpan period
 		)
-		{ 
+		{
 			return connection.PollParameter(
 				moduleType,
 				tableID,
@@ -222,7 +229,10 @@ namespace TwinCAT.Mdp.Reactive
 				throw new ArgumentNullException("connection");
 			}
 
-			return Observable.Select(trigger, o => connection.ReadParameter<T>(moduleType, tableID, subIndex));
+			return Observable.Select(
+				trigger,
+				o => connection.ReadParameter<T>(moduleType, tableID, subIndex)
+			);
 		}
 
 		/// <summary>
@@ -244,14 +254,14 @@ namespace TwinCAT.Mdp.Reactive
 		)
 		{
 			return connection.PollParameter<T>(
-			moduleType,
-			tableID,
-			subIndex,
-			Observable.Select<long, Unit>(
-				Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
-				(long e) => Unit.Default
-			)
-		);
+				moduleType,
+				tableID,
+				subIndex,
+				Observable.Select<long, Unit>(
+					Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
+					(long e) => Unit.Default
+				)
+			);
 		}
 
 		/// <summary>
@@ -311,14 +321,18 @@ namespace TwinCAT.Mdp.Reactive
 			CancellationToken cancel = default
 		)
 		{
-			return Observable.SelectMany(trigger, o => connection.ReadParameterAsync(
-					moduleType,
-					tableID,
-					subIndex,
-					type,
-					moduleIndex,
-					cancel
-				));
+			return Observable.SelectMany(
+				trigger,
+				o =>
+					connection.ReadParameterAsync(
+						moduleType,
+						tableID,
+						subIndex,
+						type,
+						moduleIndex,
+						cancel
+					)
+			);
 		}
 
 		/// <summary>
@@ -378,13 +392,17 @@ namespace TwinCAT.Mdp.Reactive
 			CancellationToken cancel = default
 		)
 		{
-			return Observable.SelectMany(trigger, o => connection.ReadParameterAsync<T>(
-					moduleType,
-					tableID,
-					subIndex,
-					moduleIndex,
-					cancel
-				));
+			return Observable.SelectMany(
+				trigger,
+				o =>
+					connection.ReadParameterAsync<T>(
+						moduleType,
+						tableID,
+						subIndex,
+						moduleIndex,
+						cancel
+					)
+			);
 		}
 
 		/// <summary>
@@ -409,16 +427,16 @@ namespace TwinCAT.Mdp.Reactive
 		)
 		{
 			return connection.PollParameterAsync<T>(
-					moduleType,
-					tableID,
-					subIndex,
-					Observable.Select<long, Unit>(
-						Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
-						(long e) => Unit.Default
-					),
-					moduleIndex,
-					cancel
-				);
+				moduleType,
+				tableID,
+				subIndex,
+				Observable.Select<long, Unit>(
+					Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
+					(long e) => Unit.Default
+				),
+				moduleIndex,
+				cancel
+			);
 		}
 	}
 }

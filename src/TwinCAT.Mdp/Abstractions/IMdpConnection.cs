@@ -19,7 +19,11 @@ namespace TwinCAT.Mdp.Abstractions
 
 		T ReadAny<T>(MdpAddress address);
 
-		Task<object> ReadAnyAsync(MdpAddress address, Type type, CancellationToken cancel = default);
+		Task<object> ReadAnyAsync(
+			MdpAddress address,
+			Type type,
+			CancellationToken cancel = default
+		);
 
 		Task<T> ReadAnyAsync<T>(MdpAddress address, CancellationToken cancel = default);
 

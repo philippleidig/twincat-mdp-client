@@ -1,4 +1,4 @@
-using TwinCAT.Ads;
+﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
 
 namespace TwinCAT.Mdp.UnitTests
@@ -57,9 +57,7 @@ namespace TwinCAT.Mdp.UnitTests
 				SubIndex = 1
 			};
 
-			Assert.ThrowsExactly<ClientNotConnectedException>(
-				() => client.WriteAny(address, 123)
-			);
+			Assert.ThrowsExactly<ClientNotConnectedException>(() => client.WriteAny(address, 123));
 		}
 
 		[TestMethod]
@@ -97,9 +95,7 @@ namespace TwinCAT.Mdp.UnitTests
 
 			byte[] buffer = new byte[4];
 
-			Assert.ThrowsExactly<ClientNotConnectedException>(
-				() => client.Read(address, buffer)
-			);
+			Assert.ThrowsExactly<ClientNotConnectedException>(() => client.Read(address, buffer));
 		}
 
 		[TestMethod]
@@ -118,9 +114,7 @@ namespace TwinCAT.Mdp.UnitTests
 
 			byte[] buffer = new byte[4];
 
-			Assert.ThrowsExactly<ClientNotConnectedException>(
-				() => client.Write(address, buffer)
-			);
+			Assert.ThrowsExactly<ClientNotConnectedException>(() => client.Write(address, buffer));
 		}
 
 		[TestMethod]

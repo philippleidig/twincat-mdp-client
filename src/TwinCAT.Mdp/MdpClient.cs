@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using TwinCAT.Ads;
 using TwinCAT.Mdp.Abstractions;
 using TwinCAT.Mdp.DataTypes;
@@ -45,9 +45,7 @@ namespace TwinCAT.Mdp
 			this._logger = logger;
 
 			// TwinCAT.Ads 7.0 requires ILoggerFactory instead of ILogger
-			ILoggerFactory loggerFactory = logger != null
-				? new SimpleLoggerFactory(logger)
-				: null;
+			ILoggerFactory loggerFactory = logger != null ? new SimpleLoggerFactory(logger) : null;
 
 			_adsClient = new AdsClient(null, settings, loggerFactory);
 		}
@@ -163,10 +161,10 @@ namespace TwinCAT.Mdp
 		/// <param name="target">The AmsNetId of the target device.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>Returns a task object that represents the operation.</returns>
-		public Task ConnectAsync(AmsNetId target, CancellationToken cancel = default)
-			=> ConnectAsync(target, (int)AmsPort.SystemService, cancel);
+		public Task ConnectAsync(AmsNetId target, CancellationToken cancel = default) =>
+			ConnectAsync(target, (int)AmsPort.SystemService, cancel);
 
-		internal Task ConnectAsync (AmsNetId target, int port, CancellationToken cancel = default)
+		internal Task ConnectAsync(AmsNetId target, int port, CancellationToken cancel = default)
 		{
 			if (this._disposed)
 			{
@@ -251,10 +249,8 @@ namespace TwinCAT.Mdp
 		/// Gets a value indicating whether the ADS client is connected to a ADS Server on the local computer.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
-		public bool IsLocal
-		{
-			get
-			{
+		public bool IsLocal {
+			get {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
@@ -267,18 +263,15 @@ namespace TwinCAT.Mdp
 		/// Sets the timeout for the ads communication. Unit is in ms.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
-		public int Timeout
-		{
-			get
-			{
+		public int Timeout {
+			get {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
 				}
 				return this._adsClient.Timeout;
 			}
-			set
-			{
+			set {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
@@ -291,10 +284,8 @@ namespace TwinCAT.Mdp
 		/// Gets the current Connection state of the TwinCAT.IConnectionStateProvider
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
-		public ConnectionState ConnectionState
-		{
-			get
-			{
+		public ConnectionState ConnectionState {
+			get {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
@@ -327,10 +318,8 @@ namespace TwinCAT.Mdp
 		/// Gets a enumerable of all available MDP modules.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
-		public IEnumerable<ModuleType> Modules
-		{
-			get
-			{
+		public IEnumerable<ModuleType> Modules {
+			get {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
@@ -343,10 +332,8 @@ namespace TwinCAT.Mdp
 		/// Gets the count of all available MDP modules.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
-		public int ModuleCount
-		{
-			get
-			{
+		public int ModuleCount {
+			get {
 				if (this._disposed)
 				{
 					throw new ObjectDisposedException("MdpClient");
@@ -424,10 +411,11 @@ namespace TwinCAT.Mdp
 			if (type == typeof(string))
 			{
 				var result = await _adsClient.ReadAnyStringAsync(
-					AdsCoEIndexGroup, 
+					AdsCoEIndexGroup,
 					ToIndexOffset(address),
-					255, 
-					System.Text.Encoding.ASCII, cancel
+					255,
+					System.Text.Encoding.ASCII,
+					cancel
 				);
 
 				result.ThrowOnError();
@@ -475,7 +463,12 @@ namespace TwinCAT.Mdp
 
 			if (typeof(T) == typeof(string))
 			{
-				var value = _adsClient.ReadAnyString(AdsCoEIndexGroup, ToIndexOffset(address), 255, System.Text.Encoding.ASCII);
+				var value = _adsClient.ReadAnyString(
+					AdsCoEIndexGroup,
+					ToIndexOffset(address),
+					255,
+					System.Text.Encoding.ASCII
+				);
 				return (T)Convert.ChangeType(value, typeof(T));
 			}
 			else
@@ -515,7 +508,7 @@ namespace TwinCAT.Mdp
 					ToIndexOffset(address),
 					255,
 					System.Text.Encoding.ASCII,
-				cancel
+					cancel
 				);
 
 				result.ThrowOnError();
@@ -581,7 +574,12 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			return _adsClient.ReadAsync(AdsCoEIndexGroup, ToIndexOffset(address), readBuffer, cancel);
+			return _adsClient.ReadAsync(
+				AdsCoEIndexGroup,
+				ToIndexOffset(address),
+				readBuffer,
+				cancel
+			);
 		}
 
 		/// <summary>
@@ -614,7 +612,13 @@ namespace TwinCAT.Mdp
 			if (value.GetType() == typeof(string))
 			{
 				string data = Convert.ToString(value);
-				_adsClient.WriteAnyString(AdsCoEIndexGroup, ToIndexOffset(address), data, data.Length, System.Text.Encoding.ASCII);
+				_adsClient.WriteAnyString(
+					AdsCoEIndexGroup,
+					ToIndexOffset(address),
+					data,
+					data.Length,
+					System.Text.Encoding.ASCII
+				);
 			}
 			else
 			{
@@ -629,7 +633,11 @@ namespace TwinCAT.Mdp
 		/// <param name="value">The data to write.</param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>A task object that represents the asynchronous operation.</returns>
-		public async Task WriteAnyAsync(MdpAddress address, object value, CancellationToken cancel = default)
+		public async Task WriteAnyAsync(
+			MdpAddress address,
+			object value,
+			CancellationToken cancel = default
+		)
 		{
 			if (this._disposed)
 			{
@@ -654,12 +662,24 @@ namespace TwinCAT.Mdp
 			if (value.GetType() == typeof(string))
 			{
 				string data = Convert.ToString(value);
-				var result = await _adsClient.WriteAnyStringAsync(AdsCoEIndexGroup, ToIndexOffset(address), data, data.Length, System.Text.Encoding.ASCII, cancel);
+				var result = await _adsClient.WriteAnyStringAsync(
+					AdsCoEIndexGroup,
+					ToIndexOffset(address),
+					data,
+					data.Length,
+					System.Text.Encoding.ASCII,
+					cancel
+				);
 				result.ThrowOnError();
 			}
 			else
 			{
-				var result = await _adsClient.WriteAnyAsync(AdsCoEIndexGroup, ToIndexOffset(address), value, cancel);
+				var result = await _adsClient.WriteAnyAsync(
+					AdsCoEIndexGroup,
+					ToIndexOffset(address),
+					value,
+					cancel
+				);
 				result.ThrowOnError();
 			}
 		}
@@ -707,7 +727,12 @@ namespace TwinCAT.Mdp
 				throw new ClientNotConnectedException(_adsClient);
 			}
 
-			var result = await _adsClient.WriteAsync(AdsCoEIndexGroup, ToIndexOffset(address), writeBuffer, cancel);
+			var result = await _adsClient.WriteAsync(
+				AdsCoEIndexGroup,
+				ToIndexOffset(address),
+				writeBuffer,
+				cancel
+			);
 			result.ThrowOnError();
 		}
 
@@ -981,7 +1006,7 @@ namespace TwinCAT.Mdp
 			ModuleType moduleType,
 			byte tableID,
 			byte subIndex,
-			object value, 
+			object value,
 			uint moduleIndex = 1
 		)
 		{
@@ -1153,7 +1178,10 @@ namespace TwinCAT.Mdp
 			};
 		}
 
-		private async Task<ModuleInfo> ScanModuleAsync(uint address, CancellationToken cancel = default)
+		private async Task<ModuleInfo> ScanModuleAsync(
+			uint address,
+			CancellationToken cancel = default
+		)
 		{
 			var mdpModule = await _adsClient.ReadAnyAsync<uint>(AdsCoEIndexGroup, address, cancel);
 

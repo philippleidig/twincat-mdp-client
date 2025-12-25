@@ -1,6 +1,6 @@
+﻿using Microsoft.Reactive.Testing;
 using System.Reactive;
 using System.Reactive.Linq;
-using Microsoft.Reactive.Testing;
 using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
 using TwinCAT.Mdp.IntegrationTests.Mocks;
@@ -40,6 +40,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.Connect("100.100.100.100.1.1")
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ConnectSuccessfully_When_ValidTargetProvided()
@@ -57,6 +58,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				client.Modules.Where(m => m == ModuleType.NIC).Count()
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ConnectSuccessfully_When_ValidTargetProvidedAsync()
@@ -74,6 +76,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				client.Modules.Where(m => m == ModuleType.NIC).Count()
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_DisconnectSuccessfully_When_AlreadyConnected()
@@ -91,6 +94,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.AreEqual(0, client.ModuleCount);
 			Assert.AreEqual(0, client.Modules.Count());
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_ConnectingToSystemWithoutDeviceManager()
@@ -101,6 +105,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.Connect(AmsNetId.Local, (int)AmsPort.SystemService)
 			);
 		}
+
 		// ===== Property Tests =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -112,6 +117,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsLocal);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnModules_When_EnumeratingConnectedModules()
@@ -122,10 +128,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var modules = client.Modules.ToList();
 
-			Assert.IsTrue(modules.Count > 0);
-			Assert.IsTrue(modules.Contains(ModuleType.NIC));
-			Assert.IsTrue(modules.Contains(ModuleType.CPU));
+			Assert.IsNotEmpty(modules);
+			Assert.Contains(ModuleType.NIC, modules);
+			Assert.Contains(ModuleType.CPU, modules);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnSameCount_When_EnumeratingModulesMultipleTimes()
@@ -137,8 +144,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 			var modules1 = client.Modules.ToList();
 			var modules2 = client.Modules.ToList();
 
-			Assert.AreEqual(modules1.Count, modules2.Count);
+			Assert.HasCount(modules1.Count, modules2);
 		}
+
 		// ===== Read Parameter Tests =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -150,8 +158,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var nicDhcp = client.ReadParameter<bool>(ModuleType.NIC, 1, 4);
 
-			Assert.AreEqual(true, nicDhcp);
+			Assert.IsTrue(nicDhcp);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnBoolValue_When_ReadingBoolParameterAsync()
@@ -162,8 +171,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var nicDhcp = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4);
 
-			Assert.AreEqual(true, nicDhcp);
+			Assert.IsTrue(nicDhcp);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnIntValue_When_ReadingIntParameter()
@@ -176,6 +186,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(2496, cpuFrequency, 100);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnIntValue_When_ReadingIntParameterAsync()
@@ -188,6 +199,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(2496, cpuFrequency, 100);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnStringValue_When_ReadingStringParameter()
@@ -200,6 +212,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual("em0", nicAdapterName);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnStringValue_When_ReadingStringParameterAsync()
@@ -212,6 +225,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual("em0", nicAdapterName);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowArgumentException_When_ReadingParameterWithInvalidType()
@@ -224,6 +238,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.ReadParameter<byte>(ModuleType.CPU, 1, 1)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowArgumentException_When_ReadingParameterAsyncWithInvalidType()
@@ -236,6 +251,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.ReadParameterAsync<byte>(ModuleType.CPU, 1, 1)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongType()
@@ -250,6 +266,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60107, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongType()
@@ -264,6 +281,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60107, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongTableID()
@@ -278,6 +296,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongTableID()
@@ -292,6 +311,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongSubIndex()
@@ -306,6 +326,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongSubIndex()
@@ -320,6 +341,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(0xECA60100, (uint)exception.ErrorCode);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowIndexOutOfRangeException_When_ReadingParameterWithWrongModuleIndex()
@@ -332,6 +354,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 2)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowIndexOutOfRangeException_When_ReadingParameterAsyncWithWrongModuleIndex()
@@ -344,6 +367,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 2)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowIndexOutOfRangeException_When_ReadingParameterWithNullModuleIndex()
@@ -356,6 +380,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.ReadParameter<int>(ModuleType.CPU, 1, 1, 0)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowIndexOutOfRangeException_When_ReadingParameterAsyncWithNullModuleIndex()
@@ -368,6 +393,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 0)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowArgumentOutOfRangeException_When_ReadingParameterFromMissingModule()
@@ -380,6 +406,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.ReadParameter<bool>(ModuleType.Raid, 1, 1)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowArgumentOutOfRangeException_When_ReadingParameterAsyncFromMissingModule()
@@ -392,6 +419,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.ReadParameterAsync<bool>(ModuleType.Raid, 1, 1)
 			);
 		}
+
 		// ===== Write Parameter Tests =====
 		//[TestMethod]
 		[TestCategory("Integration")]
@@ -435,8 +463,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 			client.WriteParameter(ModuleType.NIC, 1, 4, enableDhcp);
 			var isDhcpEnabled = client.ReadParameter<bool>(ModuleType.NIC, 1, 4);
 
-			Assert.AreEqual(true, isDhcpEnabled);
+			Assert.IsTrue(isDhcpEnabled);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteAndReadBoolValue_When_WritingBoolParameterAsync()
@@ -449,8 +478,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 			await client.WriteParameterAsync(ModuleType.NIC, 1, 4, enableDhcp);
 			var isDhcpEnabled = await client.ReadParameterAsync<bool>(ModuleType.NIC, 1, 4);
 
-			Assert.AreEqual(true, isDhcpEnabled);
+			Assert.IsTrue(isDhcpEnabled);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteAndReadIntValue_When_WritingIntParameter()
@@ -467,6 +497,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(16, seconds);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteAndReadIntValue_When_WritingIntParameterAsync()
@@ -483,6 +514,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual(16, seconds);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteAndReadStringValue_When_WritingStringParameter()
@@ -499,6 +531,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual("172.20.10.100", server.TrimEnd('\0', '1'));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteAndReadStringValue_When_WritingStringParameterAsync()
@@ -515,6 +548,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.AreEqual("172.20.10.102", server.TrimEnd('\0', '1'));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowArgumentException_When_WritingParameterWithInvalidType()
@@ -529,6 +563,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowArgumentException_When_WritingParameterAsyncWithInvalidType()
@@ -543,6 +578,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongType()
@@ -557,6 +593,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongType()
@@ -571,6 +608,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongTableID()
@@ -583,6 +621,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 222, 1, 200)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongTableID()
@@ -595,6 +634,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 222, 1, 200)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongSubIndex()
@@ -607,6 +647,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 1, 222, 200)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongSubIndex()
@@ -619,6 +660,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 222, 200)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowIndexOutOfRangeException_When_WritingParameterWithWrongModuleIndex()
@@ -631,6 +673,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowIndexOutOfRangeException_When_WritingParameterAsyncWithWrongModuleIndex()
@@ -643,6 +686,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowIndexOutOfRangeException_When_WritingParameterWithNullModuleIndex()
@@ -655,6 +699,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowIndexOutOfRangeException_When_WritingParameterAsyncWithNullModuleIndex()
@@ -667,6 +712,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ThrowArgumentOutOfRangeException_When_WritingParameterToMissingModule()
@@ -679,6 +725,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				() => client.WriteParameter(ModuleType.Raid, 1, 1, false)
 			);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ThrowArgumentOutOfRangeException_When_WritingParameterAsyncToMissingModule()
@@ -691,6 +738,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 				async () => await client.WriteParameterAsync(ModuleType.Raid, 1, 1, false)
 			);
 		}
+
 		// ===== Low-Level Tests (ReadAny/WriteAny/Byte Buffers) =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -713,6 +761,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(int));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValue_When_ReadingAnyAsyncWithMdpAddress()
@@ -734,6 +783,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(int));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValue_When_ReadingAnyAsyncGenericWithMdpAddress()
@@ -752,8 +802,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var result = await client.ReadAnyAsync<int>(address);
 
-			Assert.IsTrue(result > 0);
+			Assert.IsGreaterThan(0, result);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteSuccessfully_When_WritingAnyWithMdpAddress()
@@ -773,6 +824,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			client.WriteAny(address, "TestString");
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingAnyAsyncWithMdpAddress()
@@ -792,6 +844,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			await client.WriteAnyAsync(address, "TestString");
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReadBytes_When_ReadingWithByteBuffer()
@@ -811,9 +864,10 @@ namespace TwinCAT.Mdp.IntegrationTests
 			byte[] buffer = new byte[4];
 			int bytesRead = client.Read(address, buffer);
 
-			Assert.IsTrue(bytesRead > 0);
-			Assert.IsTrue(bytesRead <= buffer.Length);
+			Assert.IsGreaterThan(0, bytesRead);
+			Assert.IsLessThanOrEqualTo(buffer.Length, bytesRead);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReadBytes_When_ReadingAsyncWithByteBuffer()
@@ -833,9 +887,10 @@ namespace TwinCAT.Mdp.IntegrationTests
 			byte[] buffer = new byte[4];
 			var result = await client.ReadAsync(address, buffer);
 
-			Assert.IsTrue(result.ReadBytes > 0);
-			Assert.IsTrue(result.ReadBytes <= buffer.Length);
+			Assert.IsGreaterThan(0, result.ReadBytes);
+			Assert.IsLessThanOrEqualTo(buffer.Length, result.ReadBytes);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteSuccessfully_When_WritingWithByteBuffer()
@@ -857,6 +912,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			client.Write(address, buffer);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingAsyncWithByteBuffer()
@@ -878,6 +934,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			await client.WriteAsync(address, buffer);
 		}
+
 		// ===== Overload Tests =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -890,8 +947,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(int));
-			Assert.IsTrue((int)result > 0);
+			Assert.IsGreaterThan(0, (int)result);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValue_When_ReadingParameterAsyncWithTypeParameter()
@@ -903,8 +961,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(int));
-			Assert.IsTrue((int)result > 0);
+			Assert.IsGreaterThan(0, (int)result);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnStringValue_When_ReadingParameterWithTypeParameter()
@@ -917,6 +976,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(string));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnBoolValue_When_ReadingParameterWithTypeParameter()
@@ -929,6 +989,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(bool));
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ConnectSuccessfully_When_ConnectingWithAmsNetIdOnly()
@@ -939,6 +1000,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsConnected);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ConnectSuccessfully_When_ConnectingAsyncWithAmsNetIdOnly()
@@ -949,6 +1011,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsConnected);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ConnectToLocalSystem_When_ConnectingWithoutParameters()
@@ -960,6 +1023,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsTrue(client.IsConnected);
 			Assert.IsTrue(client.IsLocal);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ConnectToLocalSystem_When_ConnectingAsyncWithoutParameters()
@@ -971,6 +1035,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			Assert.IsTrue(client.IsConnected);
 			Assert.IsTrue(client.IsLocal);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ConnectSuccessfully_When_ConnectingWithStringAmsNetId()
@@ -981,6 +1046,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsConnected);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ConnectSuccessfully_When_ConnectingAsyncWithStringAmsNetId()
@@ -991,6 +1057,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsConnected);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteSuccessfully_When_WritingDoubleParameter()
@@ -1001,6 +1068,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			client.WriteParameter(ModuleType.NIC, 1, 5, 123.456);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingDoubleParameterAsync()
@@ -1011,6 +1079,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			await client.WriteParameterAsync(ModuleType.NIC, 1, 5, 123.456);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteSuccessfully_When_WritingLongParameter()
@@ -1021,6 +1090,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			client.WriteParameter(ModuleType.NIC, 1, 5, 123456789L);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingLongParameterAsync()
@@ -1031,6 +1101,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			await client.WriteParameterAsync(ModuleType.NIC, 1, 5, 123456789L);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnValue_When_ReadingParameterWithModuleIndex()
@@ -1043,6 +1114,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(result == true || result == false);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValue_When_ReadingParameterAsyncWithModuleIndex()
@@ -1055,6 +1127,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(result == true || result == false);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_WriteSuccessfully_When_WritingParameterWithModuleIndex()
@@ -1065,6 +1138,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw with moduleIndex (1)
 			client.WriteParameter(ModuleType.NIC, 1, 5, false, 1);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingParameterAsyncWithModuleIndex()
@@ -1075,6 +1149,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw with moduleIndex (1)
 			await client.WriteParameterAsync(ModuleType.NIC, 1, 5, false, 1);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ConnectSuccessfully_When_ConnectingAsyncWithCancellationToken()
@@ -1086,6 +1161,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Assert.IsTrue(client.IsConnected);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValue_When_ReadingParameterAsyncWithCancellationToken()
@@ -1095,16 +1171,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			CancellationTokenSource cts = new CancellationTokenSource();
 
-			var result = await client.ReadParameterAsync<int>(
-				ModuleType.CPU,
-				1,
-				1,
-				1,
-				cts.Token
-			);
+			var result = await client.ReadParameterAsync<int>(ModuleType.CPU, 1, 1, 1, cts.Token);
 
-			Assert.IsTrue(result > 0);
+			Assert.IsGreaterThan(0, result);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_WriteSuccessfully_When_WritingParameterAsyncWithCancellationToken()
@@ -1117,6 +1188,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 			// Should not throw
 			await client.WriteParameterAsync(ModuleType.NIC, 1, 5, false, 1, cts.Token);
 		}
+
 		// ===== Reactive Tests =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -1139,8 +1211,9 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			testScheduler.AdvanceBy(TimeSpan.FromSeconds(3).Ticks);
 
-			Assert.AreEqual(expected.Count, actual.Count);
+			Assert.HasCount(expected.Count, actual);
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_NotifyOnValueChanges_When_ObservingParameter()
@@ -1160,10 +1233,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			testScheduler.AdvanceBy(TimeSpan.FromSeconds(3).Ticks);
 
-			Assert.AreEqual(expected.Count, actual.Count);
+			Assert.HasCount(expected.Count, actual);
 
 			obserable.Dispose();
 		}
+
 		// ===== Reactive Extended Tests =====
 		[TestMethod]
 		[TestCategory("Integration")]
@@ -1179,11 +1253,12 @@ namespace TwinCAT.Mdp.IntegrationTests
 			client.Connect(Target, Port);
 			Thread.Sleep(100);
 
-			Assert.IsTrue(states.Count > 0);
-			Assert.IsTrue(states.Contains(ConnectionState.Connected));
+			Assert.IsNotEmpty(states);
+			Assert.Contains(ConnectionState.Connected, states);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnValues_When_PollingParameterGeneric()
@@ -1199,11 +1274,12 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Thread.Sleep(500);
 
-			Assert.IsTrue(values.Count >= 2);
+			Assert.IsGreaterThanOrEqualTo(2, values.Count);
 			Assert.IsTrue(values.All(v => v > 0));
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_ReturnValues_When_PollingParameterWithTypeParameter()
@@ -1219,10 +1295,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Thread.Sleep(500);
 
-			Assert.IsTrue(values.Count >= 2);
+			Assert.IsGreaterThanOrEqualTo(2, values.Count);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_NotifyOnValueChanges_When_ObservingParameterGeneric()
@@ -1238,10 +1315,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Thread.Sleep(500);
 
-			Assert.IsTrue(values.Count >= 0);
+			Assert.IsGreaterThanOrEqualTo(0, values.Count);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_NotifyOnValueChanges_When_ObservingParameterWithType()
@@ -1257,10 +1335,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			Thread.Sleep(500);
 
-			Assert.IsTrue(values.Count >= 0);
+			Assert.IsGreaterThanOrEqualTo(0, values.Count);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValues_When_PollingParameterAsync()
@@ -1270,16 +1349,23 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			var values = new List<object>();
 			var subscription = client
-				.PollParameterAsync(ModuleType.CPU, 1, 1, typeof(int), TimeSpan.FromMilliseconds(100))
+				.PollParameterAsync(
+					ModuleType.CPU,
+					1,
+					1,
+					typeof(int),
+					TimeSpan.FromMilliseconds(100)
+				)
 				.Take(3)
 				.Subscribe(value => values.Add(value));
 
 			await Task.Delay(500);
 
-			Assert.IsTrue(values.Count >= 2);
+			Assert.IsGreaterThanOrEqualTo(2, values.Count);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValues_When_PollingParameterAsyncGeneric()
@@ -1295,11 +1381,12 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			await Task.Delay(500);
 
-			Assert.IsTrue(values.Count >= 2);
+			Assert.IsGreaterThanOrEqualTo(2, values.Count);
 			Assert.IsTrue(values.All(v => v > 0));
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public async Task Should_ReturnValues_When_PollingParameterAsyncWithObservableTrigger()
@@ -1319,10 +1406,11 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			await Task.Delay(500);
 
-			Assert.IsTrue(values.Count >= 2);
+			Assert.IsGreaterThanOrEqualTo(2, values.Count);
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Integration")]
 		public void Should_DetectChange_When_ValueChanges()
@@ -1345,6 +1433,7 @@ namespace TwinCAT.Mdp.IntegrationTests
 
 			subscription.Dispose();
 		}
+
 		[TestMethod]
 		[TestCategory("Unit")]
 		public void Should_DisposeSuccessfully_When_DisposingReactiveSubscriptions()

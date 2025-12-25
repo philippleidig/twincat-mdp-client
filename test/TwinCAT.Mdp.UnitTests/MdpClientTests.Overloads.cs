@@ -1,4 +1,4 @@
-using TwinCAT.Ads;
+﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
 
 namespace TwinCAT.Mdp.UnitTests
