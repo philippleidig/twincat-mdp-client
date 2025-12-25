@@ -198,7 +198,15 @@ namespace TwinCAT.Mdp
 		/// Connects to the target MDP Device.
 		/// </summary>
 		/// <param name="target"></param>
-		public void Connect(string target) => this.Connect(AmsNetId.Parse(target));
+		/// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
+		public void Connect(string target)
+		{
+			if (target == null)
+			{
+				throw new ArgumentNullException(nameof(target));
+			}
+			this.Connect(AmsNetId.Parse(target));
+		}
 
 		/// <summary>
 		/// Connects to the target MDP Device.
@@ -214,8 +222,15 @@ namespace TwinCAT.Mdp
 		/// <param name="target"></param>
 		/// <param name="cancel">Cancellation Token.</param>
 		/// <returns>Returns a task object that represents the operation.</returns>
-		public Task ConnectAsync(string target, CancellationToken cancel = default) =>
-			this.ConnectAsync(AmsNetId.Parse(target), cancel);
+		/// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
+		public Task ConnectAsync(string target, CancellationToken cancel = default)
+		{
+			if (target == null)
+			{
+				throw new ArgumentNullException(nameof(target));
+			}
+			return this.ConnectAsync(AmsNetId.Parse(target), cancel);
+		}
 
 		/// <summary>
 		/// Gets the target TwinCAT.Ads.AmsNetId of of the established MDP connection (Destination side).
@@ -235,21 +250,58 @@ namespace TwinCAT.Mdp
 		/// <summary>
 		/// Gets a value indicating whether the ADS client is connected to a ADS Server on the local computer.
 		/// </summary>
-		public bool IsLocal => this._adsClient.IsLocal;
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
+		public bool IsLocal
+		{
+			get
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				return this._adsClient.IsLocal;
+			}
+		}
 
 		/// <summary>
 		/// Sets the timeout for the ads communication. Unit is in ms.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
 		public int Timeout
 		{
-			get => this._adsClient.Timeout;
-			set => this._adsClient.Timeout = value;
+			get
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				return this._adsClient.Timeout;
+			}
+			set
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				this._adsClient.Timeout = value;
+			}
 		}
 
 		/// <summary>
 		/// Gets the current Connection state of the TwinCAT.IConnectionStateProvider
 		/// </summary>
-		public ConnectionState ConnectionState => this._adsClient.ConnectionState;
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
+		public ConnectionState ConnectionState
+		{
+			get
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				return this._adsClient.ConnectionState;
+			}
+		}
 
 		/// <summary>
 		/// Occurs when the connection state has been changed.
@@ -260,8 +312,13 @@ namespace TwinCAT.Mdp
 		///  Disconnects this TwinCAT.Ads.AdsClient from the local ADS router.
 		/// </summary>
 		/// <returns>true if disconnected, false otherwise.</returns>
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
 		public bool Disconnect()
 		{
+			if (this._disposed)
+			{
+				throw new ObjectDisposedException("MdpClient");
+			}
 			_modules.Clear();
 			return _adsClient.Disconnect();
 		}
@@ -269,12 +326,34 @@ namespace TwinCAT.Mdp
 		/// <summary>
 		/// Gets a enumerable of all available MDP modules.
 		/// </summary>
-		public IEnumerable<ModuleType> Modules => _modules.Values;
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
+		public IEnumerable<ModuleType> Modules
+		{
+			get
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				return _modules.Values;
+			}
+		}
 
 		/// <summary>
 		/// Gets the count of all available MDP modules.
 		/// </summary>
-		public int ModuleCount => _modules.Count;
+		/// <exception cref="ObjectDisposedException">Thrown if the object has been disposed.</exception>
+		public int ModuleCount
+		{
+			get
+			{
+				if (this._disposed)
+				{
+					throw new ObjectDisposedException("MdpClient");
+				}
+				return _modules.Count;
+			}
+		}
 
 		/// <summary>
 		/// Reads any data from the specified MDP address with the given data type.

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TwinCAT.Mdp.DataTypes;
 
-namespace TwinCAT.Mdp.Tests.Mocks
+namespace TwinCAT.Mdp.IntegrationTests.Mocks
 {
 	internal class MdpAddressMock : MdpAddress
 	{

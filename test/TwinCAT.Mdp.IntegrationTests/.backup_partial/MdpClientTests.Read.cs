@@ -1,13 +1,14 @@
 ﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
-using TwinCAT.Mdp.Tests.Mocks;
+using TwinCAT.Mdp.IntegrationTests.Mocks;
 
-namespace TwinCAT.Mdp.Tests
+namespace TwinCAT.Mdp.IntegrationTests
 {
 	public partial class MdpClientTests
 	{
 		[TestMethod]
-		public void TestReadParameterBool()
+		[TestCategory("Integration")]
+		public void Should_ReturnBoolValue_When_ReadingBoolParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -18,9 +19,9 @@ namespace TwinCAT.Mdp.Tests
 			Assert.AreEqual(true, nicDhcp);
 		}
 
-
 		[TestMethod]
-		public async Task TestReadParameterBoolAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ReturnBoolValue_When_ReadingBoolParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -32,7 +33,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterInt()
+		[TestCategory("Integration")]
+		public void Should_ReturnIntValue_When_ReadingIntParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -43,9 +45,9 @@ namespace TwinCAT.Mdp.Tests
 			Assert.AreEqual(2496, cpuFrequency, 100);
 		}
 
-
 		[TestMethod]
-		public async Task TestReadParameterIntAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ReturnIntValue_When_ReadingIntParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -57,7 +59,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterString()
+		[TestCategory("Integration")]
+		public void Should_ReturnStringValue_When_ReadingStringParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -69,7 +72,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterStringAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ReturnStringValue_When_ReadingStringParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -81,7 +85,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterInvalidType()
+		[TestCategory("Integration")]
+		public void Should_ThrowArgumentException_When_ReadingParameterWithInvalidType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -93,7 +98,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterInvalidTypeAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowArgumentException_When_ReadingParameterAsyncWithInvalidType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -105,7 +111,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterWrongType()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -119,7 +126,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterWrongTypeAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -133,7 +141,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterWrongTableID()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongTableID()
 		{
 			MdpClient client = new MdpClient();
 
@@ -147,7 +156,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterWrongTableIDAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongTableID()
 		{
 			MdpClient client = new MdpClient();
 
@@ -161,7 +171,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterWrongSubIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_ReadingParameterWithWrongSubIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -175,7 +186,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterWrongSubIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_ReadingParameterAsyncWithWrongSubIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -189,7 +201,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterWrongModuleIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowIndexOutOfRangeException_When_ReadingParameterWithWrongModuleIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -201,7 +214,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterWrongModuleIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowIndexOutOfRangeException_When_ReadingParameterAsyncWithWrongModuleIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -213,7 +227,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterNullModuleIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowIndexOutOfRangeException_When_ReadingParameterWithNullModuleIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -225,7 +240,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterNullModuleIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowIndexOutOfRangeException_When_ReadingParameterAsyncWithNullModuleIndex()
 		{
 			MdpClient client = new MdpClient();
 
@@ -237,7 +253,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestReadParameterMissingModule()
+		[TestCategory("Integration")]
+		public void Should_ThrowArgumentOutOfRangeException_When_ReadingParameterFromMissingModule()
 		{
 			MdpClient client = new MdpClient();
 
@@ -249,7 +266,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestReadParameterMissingModuleAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowArgumentOutOfRangeException_When_ReadingParameterAsyncFromMissingModule()
 		{
 			MdpClient client = new MdpClient();
 

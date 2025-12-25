@@ -243,7 +243,15 @@ namespace TwinCAT.Mdp.Reactive
 			TimeSpan period
 		)
 		{
-			return connection.PollParameter<T>(moduleType, tableID, subIndex, period);
+			return connection.PollParameter<T>(
+			moduleType,
+			tableID,
+			subIndex,
+			Observable.Select<long, Unit>(
+				Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
+				(long e) => Unit.Default
+			)
+		);
 		}
 
 		/// <summary>
@@ -404,7 +412,10 @@ namespace TwinCAT.Mdp.Reactive
 					moduleType,
 					tableID,
 					subIndex,
-					period,
+					Observable.Select<long, Unit>(
+						Observable.StartWith<long>(Observable.Interval(period), new long[] { }),
+						(long e) => Unit.Default
+					),
 					moduleIndex,
 					cancel
 				);

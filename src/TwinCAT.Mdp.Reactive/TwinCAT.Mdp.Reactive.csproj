@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="7.0.123" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" />
   </ItemGroup>
 
   <ItemGroup>

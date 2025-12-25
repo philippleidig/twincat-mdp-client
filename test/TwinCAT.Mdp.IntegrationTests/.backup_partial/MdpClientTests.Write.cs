@@ -1,13 +1,14 @@
 ﻿using TwinCAT.Ads;
 using TwinCAT.Mdp.DataTypes;
 
-namespace TwinCAT.Mdp.Tests
+namespace TwinCAT.Mdp.IntegrationTests
 {
 	public partial class MdpClientTests
 	{
 		// NOTE: Device Manager does not throw an exception on invalid write access!
 
 		//[TestMethod]
+		[TestCategory("Integration")]
 		//public void TestWriteParameterReadOnly()
 		//{
 		//	MdpClient client = new MdpClient();
@@ -22,6 +23,7 @@ namespace TwinCAT.Mdp.Tests
 		//}
 		//
 		//[TestMethod]
+		[TestCategory("Integration")]
 		//public async Task TestWriteParameterReadOnlyAsync()
 		//{
 		//	MdpClient client = new MdpClient();
@@ -36,7 +38,8 @@ namespace TwinCAT.Mdp.Tests
 		//}
 
 		[TestMethod]
-		public void TestWriteParameterBool()
+		[TestCategory("Integration")]
+		public void Should_WriteAndReadBoolValue_When_WritingBoolParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -49,9 +52,9 @@ namespace TwinCAT.Mdp.Tests
 			Assert.AreEqual(true, isDhcpEnabled);
 		}
 
-
 		[TestMethod]
-		public async Task TestWriteParameterBoolAsync()
+		[TestCategory("Integration")]
+		public async Task Should_WriteAndReadBoolValue_When_WritingBoolParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -65,7 +68,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestWriteParameterInt()
+		[TestCategory("Integration")]
+		public void Should_WriteAndReadIntValue_When_WritingIntParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -80,9 +84,9 @@ namespace TwinCAT.Mdp.Tests
 			Assert.AreEqual(16, seconds);
 		}
 
-
 		[TestMethod]
-		public async Task TestWriteParameterIntAsync()
+		[TestCategory("Integration")]
+		public async Task Should_WriteAndReadIntValue_When_WritingIntParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -98,7 +102,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestWriteParameterString()
+		[TestCategory("Integration")]
+		public void Should_WriteAndReadStringValue_When_WritingStringParameter()
 		{
 			MdpClient client = new MdpClient();
 
@@ -114,7 +119,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestWriteParameterStringAsync()
+		[TestCategory("Integration")]
+		public async Task Should_WriteAndReadStringValue_When_WritingStringParameterAsync()
 		{
 			MdpClient client = new MdpClient();
 
@@ -122,7 +128,7 @@ namespace TwinCAT.Mdp.Tests
 
 			string sntpServer = "172.20.10.102";
 
-			await client.WriteParameterAsync (ModuleType.Time, 1, 1, sntpServer);
+			await client.WriteParameterAsync(ModuleType.Time, 1, 1, sntpServer);
 
 			var server = await client.ReadParameterAsync<string>(ModuleType.Time, 1, 1);
 
@@ -130,7 +136,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestWriteParameterInvalidType()
+		[TestCategory("Integration")]
+		public void Should_ThrowArgumentException_When_WritingParameterWithInvalidType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -144,7 +151,8 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public async Task TestWriteParameterInvalidTypeAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowArgumentException_When_WritingParameterAsyncWithInvalidType()
 		{
 			MdpClient client = new MdpClient();
 
@@ -158,150 +166,162 @@ namespace TwinCAT.Mdp.Tests
 		}
 
 		[TestMethod]
-		public void TestWriteParameterWrongType()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongType()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			bool value = false;
-		
+
 			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, value)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterWrongTypeAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongType()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			bool value = false;
-		
+
 			await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, value)
 			);
 		}
 
 		[TestMethod]
-		public void TestWriteParameterWrongTableID()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongTableID()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 222, 1, 200)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterWrongTableIDAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongTableID()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			await Assert.ThrowsExactlyAsync<AdsErrorException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 222, 1, 200)
 			);
 		}
 
 		[TestMethod]
-		public void TestWriteParameterWrongSubIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowAdsErrorException_When_WritingParameterWithWrongSubIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			Assert.ThrowsExactly<AdsErrorException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 222, 200)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterWrongSubIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowAdsErrorException_When_WritingParameterAsyncWithWrongSubIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			await Assert.ThrowsExactlyAsync<AdsErrorException>(
-				async () => await client.WriteParameterAsync (ModuleType.CPU, 1, 222, 200)
+				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 222, 200)
 			);
 		}
 
 		[TestMethod]
-		public void TestWriteParameterWrongModuleIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowIndexOutOfRangeException_When_WritingParameterWithWrongModuleIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterWrongModuleIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowIndexOutOfRangeException_When_WritingParameterAsyncWithWrongModuleIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 2)
 			);
 		}
-		
+
 		[TestMethod]
-		public void TestWriteParameterNullModuleIndex()
+		[TestCategory("Integration")]
+		public void Should_ThrowIndexOutOfRangeException_When_WritingParameterWithNullModuleIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			Assert.ThrowsExactly<IndexOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterNullModuleIndexAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowIndexOutOfRangeException_When_WritingParameterAsyncWithNullModuleIndex()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			await Assert.ThrowsExactlyAsync<IndexOutOfRangeException>(
 				async () => await client.WriteParameterAsync(ModuleType.CPU, 1, 1, 200, 0)
 			);
 		}
-		
+
 		[TestMethod]
-		public void TestWriteParameterMissingModule()
+		[TestCategory("Integration")]
+		public void Should_ThrowArgumentOutOfRangeException_When_WritingParameterToMissingModule()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => client.WriteParameter(ModuleType.Raid, 1, 1, false)
 			);
 		}
-		
+
 		[TestMethod]
-		public async Task TestWriteParameterMissingModuleAsync()
+		[TestCategory("Integration")]
+		public async Task Should_ThrowArgumentOutOfRangeException_When_WritingParameterAsyncToMissingModule()
 		{
 			MdpClient client = new MdpClient();
-		
+
 			client.Connect(Target, Port);
-		
+
 			await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(
-				async () => await client.WriteParameterAsync (ModuleType.Raid, 1, 1, false)
+				async () => await client.WriteParameterAsync(ModuleType.Raid, 1, 1, false)
 			);
 		}
 	}

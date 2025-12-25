@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TwinCAT.Mdp.Abstractions;
 using TwinCAT.Mdp.DataTypes;
 
-namespace TwinCAT.Mdp.Tests.Mocks
+namespace TwinCAT.Mdp.IntegrationTests.Mocks
 {
 	internal class DeviceManagerModuleMock
 	{
@@ -19,7 +19,7 @@ namespace TwinCAT.Mdp.Tests.Mocks
 
 		private List<MdpAddressMock> _mdpAddresses;
 
-		public DeviceManagerModuleMock(ushort id, ModuleType type) 
+		public DeviceManagerModuleMock(ushort id, ModuleType type)
 		{
 			ID = id;
 			Type = type;
@@ -28,7 +28,7 @@ namespace TwinCAT.Mdp.Tests.Mocks
 
 		public DeviceManagerModuleMock RegisterMdpAddress<T>(
 			byte tableID,
-			byte subIndex,			 
+			byte subIndex,
 			Memory<byte> data,
 			bool isReadOnly = true
 		)
@@ -43,7 +43,7 @@ namespace TwinCAT.Mdp.Tests.Mocks
 			{
 				expectedSize = Marshal.SizeOf(typeof(T));
 			}
-			
+
 			var address = new MdpAddressMock
 			{
 				Area = MdpArea.Config,
